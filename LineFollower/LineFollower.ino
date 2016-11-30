@@ -1,5 +1,5 @@
 /* 
- * hello Ben Demo line-following code for the Pololu Zumo Robot
+ * hello Ben how are you Demo line-following code for the Pololu Zumo Robot
  *
  * This code will follow a black line on a white background, using a
  * PID-based algorithm.  It works decently on courses with smooth, 6"
