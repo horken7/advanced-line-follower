@@ -29,15 +29,17 @@ int lastError = 0;
 // (400 lets the motors go at top speed; decrease to impose a speed limit)
 const int MAX_SPEED = 400;
 
+// Define an array for holding sensor values.
+#define NUM_SENSORS 6
+unsigned int sensorValues[NUM_SENSORS];
+
 
 void setup()
 {
-  // Play a little welcome song
-  buzzer.play(">g32>>c32");
 
   // Initialize the reflectance sensors module
   reflectanceSensors.init();
-
+  
   // Wait for the user button to be pressed and released
   button.waitForButton();
 
@@ -62,17 +64,13 @@ void setup()
     delay(20);
   }
   motors.setSpeeds(0,0);
-
   // Turn off LED to indicate we are through with calibration
   digitalWrite(13, LOW);
-  buzzer.play(">g32>>c32");
-
+  
   // Wait for the user button to be pressed and released
   button.waitForButton();
+  Serial.begin (9600);
 
-  // Play music and wait for it to finish before we start driving.
-  buzzer.play("L16 cdegreg4");
-  while(buzzer.isPlaying());
 }
 
 void loop()
@@ -82,7 +80,27 @@ void loop()
   // Get the position of the line.  Note that we *must* provide the "sensors"
   // argument to readLine() here, even though we are not interested in the
   // individual sensor readings
-  int position = reflectanceSensors.readLine(sensors);
+  unsigned int position = reflectanceSensors.readLine(sensors);
+
+  // To get raw sensor values instead, call:
+  reflectanceSensors.read(sensorValues);
+  
+  for (byte i = 0; i < NUM_SENSORS; i++)
+  {
+    Serial.print (sensorValues[i]);
+    Serial.print (' ');
+  }
+  Serial.print ("    ");
+  Serial.println (position);
+
+  // To get calibrated sensor values instead, call:
+  reflectanceSensors.readCalibrated(sensorValues);
+  for (byte i = 0; i < NUM_SENSORS; i++)
+  {
+    Serial.print (sensorValues[i]);
+    Serial.print (' ');
+  }
+  Serial.println ();
 
   // Our "error" is how far we are away from the center of the line, which
   // corresponds to position 2500.
