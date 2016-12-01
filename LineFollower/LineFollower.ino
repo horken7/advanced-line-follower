@@ -39,7 +39,8 @@ void setup()
 
   // Initialize the reflectance sensors module
   reflectanceSensors.init();
-  
+
+  /*
   // Wait for the user button to be pressed and released
   button.waitForButton();
 
@@ -66,7 +67,7 @@ void setup()
   motors.setSpeeds(0,0);
   // Turn off LED to indicate we are through with calibration
   digitalWrite(13, LOW);
-  
+  */
   // Wait for the user button to be pressed and released
   button.waitForButton();
   Serial.begin (9600);
@@ -77,30 +78,13 @@ void loop()
 {
   unsigned int sensors[6];
 
+  printSensorReadingsToSerial();
+  
+  /*
   // Get the position of the line.  Note that we *must* provide the "sensors"
   // argument to readLine() here, even though we are not interested in the
   // individual sensor readings
   unsigned int position = reflectanceSensors.readLine(sensors);
-
-  // To get raw sensor values instead, call:
-  reflectanceSensors.read(sensorValues);
-  
-  for (byte i = 0; i < NUM_SENSORS; i++)
-  {
-    Serial.print (sensorValues[i]);
-    Serial.print (' ');
-  }
-  Serial.print ("    ");
-  Serial.println (position);
-
-  // To get calibrated sensor values instead, call:
-  reflectanceSensors.readCalibrated(sensorValues);
-  for (byte i = 0; i < NUM_SENSORS; i++)
-  {
-    Serial.print (sensorValues[i]);
-    Serial.print (' ');
-  }
-  Serial.println ();
 
   // Our "error" is how far we are away from the center of the line, which
   // corresponds to position 2500.
@@ -136,4 +120,35 @@ void loop()
     m2Speed = MAX_SPEED;
 
   motors.setSpeeds(m1Speed, m2Speed);
+  */
 }
+
+void printSensorReadingsToSerial()
+{
+  unsigned int sensors[6];
+  // Get the position of the line.  Note that we *must* provide the "sensors"
+  // argument to readLine() here, even though we are not interested in the
+  // individual sensor readings
+  unsigned int position = reflectanceSensors.readLine(sensors);
+    
+  // Raw sensor values
+  reflectanceSensors.read(sensorValues);
+  
+  for (byte i = 0; i < NUM_SENSORS; i++)
+  {
+    Serial.print (sensorValues[i]);
+    Serial.print (' ');
+  }
+  Serial.print ("    ");
+  Serial.println (position);
+
+  // Calibrated sensor values
+  reflectanceSensors.readCalibrated(sensorValues);
+  for (byte i = 0; i < NUM_SENSORS; i++)
+  {
+    Serial.print (sensorValues[i]);
+    Serial.print (' ');
+  }
+  Serial.println ();
+ }
+
