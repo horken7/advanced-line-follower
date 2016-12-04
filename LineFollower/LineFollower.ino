@@ -68,7 +68,6 @@ void setup()
     digitalWrite(13, LOW);
   // Wait for the user button to be pressed and released
   button.waitForButton();
-  Serial.begin (9600);
 
 }
 
@@ -120,32 +119,21 @@ void loop()
 }
 
 void printSensorReadingsToSerial()
+// Prints the sensor readings to serial as csv values,
+// it first prints the individual calibrated sensor values,
+// then the weighted average.
 {
+  Serial.begin (9600);
   unsigned int sensors[6];
-  // Get the position of the line.  Note that we *must* provide the "sensors"
-  // argument to readLine() here, even though we are not interested in the
-  // individual sensor readings
   unsigned int position = reflectanceSensors.readLine(sensors);
 
-  // Raw sensor values
-  reflectanceSensors.read(sensorValues);
+  reflectanceSensors.readCalibrated(sensors);
 
-  for (byte i = 0; i < NUM_SENSORS; i++)
+  for (byte i = 0; i < 6; i++)
   {
-    Serial.print (sensorValues[i]);
+    Serial.print (sensors[i]);
     Serial.print (',');
   }
   Serial.println (position);
-
-  /*
-  // Calibrated sensor values
-  reflectanceSensors.readCalibrated(sensorValues);
-  for (byte i = 0; i < NUM_SENSORS; i++)
-  {
-    Serial.print (sensorValues[i]);
-    Serial.print (' ');
-  }
-  Serial.println ();
-  */
 }
 
