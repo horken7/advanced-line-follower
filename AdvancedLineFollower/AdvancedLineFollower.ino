@@ -20,7 +20,7 @@
 
 // SENSOR_THRESHOLD is a value to compare reflectance sensor
 // readings to to decide if the sensor is over a black line
-#define SENSOR_THRESHOLD 700
+#define SENSOR_THRESHOLD 500
 
 // ABOVE_LINE is a helper macro that takes returns
 // 1 if the sensor is over the line and 0 if otherwise
@@ -29,12 +29,12 @@
 // Motor speed when turning. TURN_SPEED should always
 // have a positive value, otherwise the Zumo will turn
 // in the wrong direction.
-#define TURN_SPEED 400
+#define TURN_SPEED 200
 
 // Motor speed when driving straight. SPEED should always
 // have a positive value, otherwise the Zumo will travel in the
 // wrong direction.
-#define SPEED 400 
+#define SPEED 200 
 
 // Thickness of your line in inches
 // #define LINE_THICKNESS .75 
@@ -44,9 +44,9 @@ ZumoMotors motors;
 Pushbutton button(ZUMO_BUTTON);
 
 void setup() {
-
   button.waitForButton();
   calibrate_sensors();
+  Serial.begin (9600);
   
 }
 
@@ -196,15 +196,25 @@ void followSegment()
   unsigned int sensors[6];
   int offset_from_center;
   int power_difference;
+  unsigned long millis_start;
+  unsigned long millis_curr;
   
   while(1)
   {     
+    // Delay to make actions each timestep
+    millis_start = millis();
+    while(100 < (millis()-millis_start));
+    millis_curr = millis();
+    
     // Get the position of the line.
     position = reflectanceSensors.readLine(sensors);
 
+    // Get calibrated sensor values
+    reflectanceSensors.readCalibrated(sensors);
+
     // Print sensor readings to serial.
-    //printSensorReadingsToSerial();
-     
+    printSensorReadingsToSerial(sensors, position, millis_curr);
+         
     // The offset_from_center should be 0 when we are on the line.
     offset_from_center = ((int)position) - 2500;
      
@@ -236,37 +246,33 @@ void followSegment()
     // determining whether there is a line straight ahead, and the
     // sensors 0 and 5 for detecting lines going to the left and
     // right.
-     
     if(!ABOVE_LINE(sensors[0]) && !ABOVE_LINE(sensors[1]) && !ABOVE_LINE(sensors[2]) && !ABOVE_LINE(sensors[3]) && !ABOVE_LINE(sensors[4]) && !ABOVE_LINE(sensors[5]))
     {
       // There is no line visible ahead, and we didn't see any
       // intersection.  Must be a dead end.            
       return;
     }
-    else if(sensors[0] > SENSOR_THRESHOLD|| sensors[5] > SENSOR_THRESHOLD)
+    else if(sensors[0] > SENSOR_THRESHOLD && sensors[5] > SENSOR_THRESHOLD)
     {
       // Found an intersection.
       return;
     }
-   
   }
 }
 
-void printSensorReadingsToSerial()
+void printSensorReadingsToSerial(unsigned int sensors[6], unsigned int position, unsigned long timestamp)
 // Prints the sensor readings to serial as csv values,
 // it first prints the individual calibrated sensor values,
 // then the weighted average.
 {
-  Serial.begin (9600);
-  unsigned int sensors[6];
-  unsigned int position = reflectanceSensors.readLine(sensors);
-
-  reflectanceSensors.readCalibrated(sensors);
-
-  for (byte i = 0; i < 6; i++)
+  
+  for (int i = 0; i < 6; i++)
   {
     Serial.print (sensors[i]);
     Serial.print (',');
   }
-  Serial.println (position);
+  Serial.print (position);
+  Serial.print (',');
+  Serial.println (timestamp);
 }
+
