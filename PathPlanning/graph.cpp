@@ -7,61 +7,64 @@ struct Edge {
   float direction;
   int startNode;
   int endNode;
+  Edge *next;
 };
+
+typedef Edge *Graph;
 
 Edge nullEdge = {0, 0, -1, 0};
 
-void appendEdge(Edge newEdge, Edge *graph);
+void appendEdge(Edge *graph, float length, float direction, int startNode, int endNode);
 void printGraph(Edge &);
-int sizeList(Edge *list);
+int sizeList(Graph &graph);
 
 int main(int argc, char *argv[])
 {
-  Edge *graph = new Edge[3];
-  graph[0].length = 2;
-  graph[0].startNode = 0;
-  graph[0].endNode = 2;
-  graph[0].direction = 2;
+  Graph graph;
 
-  graph[1].length = 2;
-  graph[1].startNode = 0;
-  graph[1].endNode = 2;
-  graph[1].direction = 2;
+  Edge *edge1 = new Edge;
+  edge1->length = 3;
+  edge1->direction = 3;
+  edge1->startNode = 3;
+  edge1->endNode = 4;
 
-  graph[2] = nullEdge;
+  Edge *edge2 = new Edge;
+  edge2->length = 3;
+  edge2->direction = 3;
+  edge2->startNode = 3;
+  edge2->endNode = 4;
 
+  Edge *edge3 = new Edge;
+  edge3->length = 3;
+  edge3->direction = 3;
+  edge3->startNode = 3;
+  edge3->endNode = 4;
 
+  edge1->next = edge2;
+  edge2->next = edge3;
+  edge3->next = NULL;
+
+  graph = edge1;
   int size = sizeList(graph);
   cout << size << endl;
 
-
-  Edge newEdge;
-  newEdge.endNode = 3;
-  newEdge.startNode = 5;
-  newEdge.length = 2;
-  newEdge.direction = 2;
-
-  appendEdge(newEdge, graph);
+  appendEdge(graph, 3, 3, 3, 3);
 
   size = sizeList(graph);
   cout << size << endl;
-
-  delete[] graph;
   return 0;
 }
 
-void appendEdge(Edge newEdge, Edge *graph) {
+void appendEdge(Edge *graph, float length, float direction, int startNode, int endNode) {
 
-  int size = sizeList(graph);
-  Edge *newGraph = new Edge[size + 2];
-  for (int i = 0; i < size; i++) {
-    newGraph[i] = graph[i];
-  }
+  Edge *newEdge = new Edge;
+  newEdge->length = length;
+  newEdge->direction = direction;
+  newEdge->startNode = startNode;
+  newEdge->endNode = endNode;
+  newEdge->next = graph;
+  graph = newEdge;
 
-  newGraph[size] = newEdge;
-  newGraph[size + 1] = nullEdge;
-  delete[] graph;
-  graph = newGraph;
 
 }
 
@@ -70,10 +73,14 @@ void printGraph(Edge &) {
 }
 
 
-int sizeList(Edge *list) {
-  int size = 0;
-  while (list[size].startNode >= 0) {
+int sizeList(Graph &graph) {
+
+  Edge *edge = graph;
+  int size = 1;
+  while (edge->next != NULL) {
     size++;
+    edge = edge->next;
   }
+
   return size;
 }
