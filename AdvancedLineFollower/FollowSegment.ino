@@ -20,13 +20,7 @@ void followSegment()
     
     // Get the position of the line.
     position = reflectanceSensors.readLine(sensors);
-
-    // Get calibrated sensor values
-    reflectanceSensors.readCalibrated(sensors);
-
-    // Print sensor readings to serial.
-    printSensorReadingsToSerial(sensors, position, millis_curr);
-         
+     
     // The offset_from_center should be 0 when we are on the line.
     offset_from_center = ((int)position) - 2500;
      
@@ -35,12 +29,7 @@ void followSegment()
     // to the left.  If it is a negative number, the robot will
     // turn to the right, and the magnitude of the number determines
     // the sharpness of the turn.
-    // Corresponds to P regulator with proportional factor Kp = 1/3
     power_difference = offset_from_center / 3;
-
-    // Alternative control function
-    // power_difference = offset_from_center/ 4 + 6 * (offset_from_center - last_offset);
-    // last_offset = offset_from_center;
      
     // Compute the actual motor settings.  We never set either motor
     // to a negative value.
@@ -58,16 +47,19 @@ void followSegment()
     // determining whether there is a line straight ahead, and the
     // sensors 0 and 5 for detecting lines going to the left and
     // right.
-    if(sensors[0]<NO_LINE_THRESHOLD && sensors[2]<NO_LINE_THRESHOLD && sensors[3]<NO_LINE_THRESHOLD && sensors[4]<NO_LINE_THRESHOLD && sensors[5]<NO_LINE_THRESHOLD)
+     
+    if(!ABOVE_LINE(sensors[0]) && !ABOVE_LINE(sensors[1]) && !ABOVE_LINE(sensors[2]) && !ABOVE_LINE(sensors[3]) && !ABOVE_LINE(sensors[4]) && !ABOVE_LINE(sensors[5]))
     {
       // There is no line visible ahead, and we didn't see any
       // intersection.  Must be a dead end.            
       return;
     }
-    if(sensors[0] > SENSOR_THRESHOLD || sensors[5] > SENSOR_THRESHOLD)
+    else if(ABOVE_LINE(sensors[0]) || ABOVE_LINE(sensors[5]))
     {
       // Found an intersection.
       return;
     }
+   
   }
 }
+

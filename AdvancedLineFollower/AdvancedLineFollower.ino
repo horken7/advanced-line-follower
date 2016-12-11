@@ -20,7 +20,7 @@
 
 // SENSOR_THRESHOLD is a value to compare reflectance sensor
 // readings to to decide if the sensor is over a black line
-#define SENSOR_THRESHOLD 500
+#define SENSOR_THRESHOLD 300
 
 // NO_LINE_THRESHOLD is a value to compare reflectanse sensor
 // readings to decide if you are NOT over a black line
@@ -41,7 +41,13 @@
 #define SPEED 400 
 
 // Thickness of your line in inches
-// #define LINE_THICKNESS .75 
+ #define LINE_THICKNESS .75
+
+#define INCHES_TO_ZUNITS 17142.0
+
+#define OVERSHOOT(line_thickness)(((INCHES_TO_ZUNITS * (line_thickness)) / SPEED))
+
+#define ABOVE_LINE(sensor)((sensor) > SENSOR_THRESHOLD)
 
 ZumoReflectanceSensorArray reflectanceSensors;
 ZumoMotors motors;
@@ -55,20 +61,12 @@ void setup() {
   
 }
 
-void loop() {
-  button.waitForButton();
+void loop() 
+{
   followSegment();
-  motors.setSpeeds(0,0);
-  button.waitForButton();
-  motors.setSpeeds(SPEED,SPEED);
-  delay(100);
-  turn('R');
-  motors.setSpeeds(0,0);
-  button.waitForButton();
-  motors.setSpeeds(SPEED,SPEED);
-  delay(100);
-  turn('L');
-  motors.setSpeeds(0,0);
+  motors.setSpeeds(0, 0);
+  unsigned char dir = Intersection();
+  turn(dir);
+ 
 }
-
 
