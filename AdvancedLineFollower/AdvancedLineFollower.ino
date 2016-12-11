@@ -38,7 +38,7 @@
 // Motor speed when driving straight. SPEED should always
 // have a positive value, otherwise the Zumo will travel in the
 // wrong direction.
-#define SPEED 400 
+#define SPEED 200 
 
 // Thickness of your line in inches
  #define LINE_THICKNESS .75
@@ -63,10 +63,5 @@ void setup() {
 
 void loop() 
 {
-  followSegment();
-  motors.setSpeeds(0, 0);
-  unsigned char dir = Intersection();
-  turn(dir);
- 
+  followPath();
 }
-
