@@ -52,11 +52,14 @@ void followSegment()
     {
       // There is no line visible ahead, and we didn't see any
       // intersection.  Must be a dead end.            
+
+      motors.setSpeeds(0,0);
       return;
     }
     else if(ABOVE_LINE(sensors[0]) || ABOVE_LINE(sensors[5]))
     {
       // Found an intersection.
+      motors.setSpeeds(0,0);
       return;
     }
    
