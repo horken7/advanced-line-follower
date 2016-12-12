@@ -15,9 +15,9 @@ logfile = open('arduinoReadings.csv', 'a')
 
 while 1:
 	line = ser.readline()
-	#a =  line + "%s" % ("\n")
-	print line	
-	logfile.write(line)
+	a =  line + "%s" % ("\n")
+	print a	
+	logfile.write(a)
 	logfile.flush()    
 logfile.close()
 ser.close()
