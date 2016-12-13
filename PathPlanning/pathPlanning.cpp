@@ -1,126 +1,157 @@
-// Source from http://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-using-priority_queue-stl/
-// Program to find Dijkstra's shortest path using
-// priority_queue in STL
-#include<bits/stdc++.h>
-using namespace std;
-# define INF 0x3f3f3f3f
+// A C / C++ program for Dijkstra's single source shortest path algorithm.
+// The program is for adjacency matrix representation of the graph
 
-// iPair ==> Integer Pair
-typedef pair<int, int> iPair;
+#include <stdio.h>
+#include <limits.h>
 
-// This class represents a directed graph using
-// adjacency list representation
-class Graph
+struct Edge
 {
-	int V; // No. of vertices
-
-	// In a weighted graph, we need to store vertex
-	// and weight pair for every edge
-	list< pair<int, int> > *adj;
-
-public:
-	Graph(int V); // Constructor
-
-	// function to add an edge to graph
-	void addEdge(int u, int v, int w);
-
-	// prints shortest path from s
-	void shortestPath(int s);
+  int weight;
+  int direction;
+  int firstNode;
+  int secondNode;
 };
 
-// Allocates memory for adjacency list
-Graph::Graph(int V)
+// A utility function to find the vertex with minimum distance value, from
+// the set of vertices not yet included in shortest path tree
+int minDistance(int dist[], bool sptSet[], int V)
 {
-	this->V = V;
-	adj = new list<iPair> [V];
+   // Initialize min value
+ int min = INT_MAX, min_index;
+
+ for (int v = 0; v < V; v++)
+   if (sptSet[v] == false && dist[v] <= min)
+     min = dist[v], min_index = v;
+
+   return min_index;
+ }
+
+// A utility function to print the constructed distance array
+void printSolution(int dist[], int V)
+{
+   printf("Vertex   Distance from Source\n");
+   for (int i = 0; i < V; i++)
+    printf("%d \t\t %d\n", i, dist[i]);
 }
 
-void Graph::addEdge(int u, int v, int w)
+// A utility function to print the path to goal
+void printPath(Edge previous[], int start, int goal)
 {
-	adj[u].push_back(make_pair(v, w));
-	adj[v].push_back(make_pair(u, w));
+  int i = goal;
+  while (previous[i].firstNode != start || previous[i].secondNode != start) 
+  {
+    if (previous[i].firstNode == i)
+    {
+      printf("From %d to %d\n", previous[i].firstNode, previous[i].secondNode);
+    }
+    if (previous[i].secondNode == i)
+    {
+      printf("From %d to %d\n", previous[i].secondNode, previous[i].firstNode);
+    }
+    else
+    {
+      printf("Goal");
+      break;
+    }
+  }
 }
 
-// Prints shortest paths from src to all other vertices
-void Graph::shortestPath(int src)
-{
-	// Create a priority queue to store vertices that
-	// are being preprocessed. This is weird syntax in C++.
-	// Refer below link for details of this syntax
-	// http://geeksquiz.com/implement-min-heap-using-stl/
-	priority_queue< iPair, vector <iPair> , greater<iPair> > pq;
+// Funtion that implements Dijkstra's single source shortest path algorithm
+// for a graph represented using adjacency matrix representation
+void dijkstra(Edge graph[], int src, int V, int dist[], Edge previous[])
+{ 
+     bool sptSet[V]; // sptSet[i] will true if vertex i is included in shortest
+                     // path tree or shortest distance from src to i is finalized
 
-	// Create a vector for distances and initialize all
-	// distances as infinite (INF)
-	vector<int> dist(V, INF);
+     // Initialize all distances as INFINITE and stpSet[] as false
+     for (int i = 0; i < V; i++)
+      dist[i] = INT_MAX, sptSet[i] = false;
 
-	// Insert source itself in priority queue and initialize
-	// its distance as 0.
-	pq.push(make_pair(0, src));
-	dist[src] = 0;
+     // Distance of source vertex from itself is always 0
+    dist[src] = 0;
 
-	/* Looping till priority queue becomes empty (or all
-	distances are not finalized) */
-	while (!pq.empty())
-	{
-		// The first vertex in pair is the minimum distance
-		// vertex, extract it from priority queue.
-		// vertex label is stored in second of pair (it
-		// has to be done this way to keep the vertices
-		// sorted distance (distance must be first item
-		// in pair)
-		int u = pq.top().second;
-		pq.pop();
+     // Find shortest path for all vertices
+    for (int count = 0; count < V-1; count++)
+    {
+       // Pick the minimum distance vertex from the set of vertices not
+       // yet processed. u is always equal to src in first iteration.
+     int u = minDistance(dist, sptSet, V);
 
-		// 'i' is used to get all adjacent vertices of a vertex
-		list< pair<int, int> >::iterator i;
-		for (i = adj[u].begin(); i != adj[u].end(); ++i)
-		{
-			// Get vertex label and weight of current adjacent
-			// of u.
-			int v = (*i).first;
-			int weight = (*i).second;
+       // Mark the picked vertex as processed
+     sptSet[u] = true;
 
-			// If there is shorted path to v through u.
-			if (dist[v] > dist[u] + weight)
-			{
-				// Updating distance of v
-				dist[v] = dist[u] + weight;
-				pq.push(make_pair(dist[v], v));
-			}
-		}
-	}
-
-	// Print shortest distances stored in dist[]
-	printf("Vertex Distance from Source\n");
-	for (int i = 0; i < V; ++i)
-		printf("%d \t\t %d\n", i, dist[i]);
-}
-
-// Driver program to test methods of graph class
+       // Update dist value of the adjacent vertices of the picked vertex.
+     for (int v = 0; v < V; v++)
+         // Update dist[v] only if, there is an edge from u to v
+         // v is not in sptSet, and total weight of path from src to v through u is 
+         // smaller than current value of dist[v]
+       if ((graph[v].firstNode == u || graph[v].secondNode == u) 
+        && (!sptSet[v] && dist[u] != INT_MAX && graph[v].weight+dist[u] < dist[v]))
+       {
+        dist[v] = dist[u] + graph[u].weight;
+        previous[v] = graph[v];
+      }
+    }
+  }
+  
+// driver program to test above function
 int main()
 {
-	// create the graph given in above fugure
-	int V = 9;
-	Graph g(V);
+  Edge *edge0 = new Edge;
+  edge0->weight = 5;
+  edge0->direction = 1;
+  edge0->firstNode = 0;
+  edge0->secondNode = 1;
 
-	// making above shown graph
-	g.addEdge(0, 1, 4);
-	g.addEdge(0, 7, 8);
-	g.addEdge(1, 2, 8);
-	g.addEdge(1, 7, 11);
-	g.addEdge(2, 3, 7);
-	g.addEdge(2, 8, 2);
-	g.addEdge(2, 5, 4);
-	g.addEdge(3, 4, 9);
-	g.addEdge(3, 5, 14);
-	g.addEdge(4, 5, 10);
-	g.addEdge(5, 6, 2);
-	g.addEdge(6, 7, 1);
-	g.addEdge(6, 8, 6);
-	g.addEdge(7, 8, 7);
+  Edge *edge1 = new Edge;
+  edge1->weight =2;
+  edge1->direction = 1;
+  edge1->firstNode = 1;
+  edge1->secondNode = 2;
 
-	g.shortestPath(0);
+  Edge *edge2 = new Edge;
+  edge2->weight = 8;
+  edge2->direction = 1;
+  edge2->firstNode = 2;
+  edge2->secondNode = 4;
 
-	return 0;
+  Edge *edge3 = new Edge;
+  edge3->weight = 3;
+  edge3->direction = 1;
+  edge3->firstNode = 0;
+  edge3->secondNode = 3;
+
+  Edge *edge4 = new Edge;
+  edge4->weight = 7;
+  edge4->direction = 1;
+  edge4->firstNode = 3;
+  edge4->secondNode = 5;
+
+  Edge *edge5 = new Edge;
+  edge5->weight = 1;
+  edge5->direction = 1;
+  edge5->firstNode = 4;
+  edge5->secondNode = 5;
+
+  Edge *edge6 = new Edge;
+  edge6->weight = 1;
+  edge6->direction = 1;
+  edge6->firstNode = 2;
+  edge6->secondNode = 3;
+
+  Edge graph[] = {*edge0,*edge1,*edge2,*edge3,*edge4,*edge5,*edge6};
+
+  int V = 6;  // Number of nodes in the graph
+  int start = 0;
+  int goal = 4;
+
+  int dist[V];  // dist[i] will hold the shortest distance from src to i
+  Edge previous[V]; // previous[i] will hold the previous shortest path edge to i
+
+
+  dijkstra(graph, start, V, dist, previous);
+  printSolution(dist, V);  // print the constructed distance array
+  //printPath(previous, start, goal);
+
+  return 0;
 }
