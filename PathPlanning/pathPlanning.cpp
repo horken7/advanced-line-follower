@@ -1,9 +1,9 @@
 // A C / C++ program for Dijkstra's single source shortest path algorithm.
 // The program is for adjacency matrix representation of the graph
+// Algorithm from: http://www.geeksforgeeks.org/greedy-algorithms-set-6-dijkstras-shortest-path-algorithm/
   
 #include <stdio.h>
 const int INT_MAX = 999999999;
-  
   
 // A utility function to find the vertex with minimum distance value, from
 // the set of vertices not yet included in shortest path tree
@@ -28,15 +28,41 @@ void printSolution(int dist[], int V)
 }
 
 // A utility function to print the path to goal
-void printPath(int *previous, int start, int goal)
+int * printPath(int *previous, int start, int goal)
 {
+  int count = 1;
   int i = goal;
+  // First loop through the path to goal to get amount of nodes to visit
+  while (previous[i] != start)
+  {
+    i = previous[i];
+    count++;
+  }
+
+  int path[count+1];  // Using a fixed size array
+  i = goal;
+  path[count] = i;
+  // Adding the nodes to the array
+  for (int j = count-1; j >= 0; j--)
+  {
+    path[j] = previous[i];
+    i = previous[i];
+  }
+/*
+  for (int i = 0; i <= count; ++i)
+  {
+    printf("%d\n", path[i]);
+  }
+  printf("-----------------------------------%d\n",count);
+  i = goal;
   while (previous[i] != start) 
   {
     printf("From %d to %d\n", previous[i], i);
     i = previous[i];
   }
   printf("Start from %d and go to %d, then go ^\n", previous[i], i);
+  */
+  return path;
 } 
   
 // Funtion that implements Dijkstra's single source shortest path algorithm
@@ -83,14 +109,13 @@ int main()
 {
   const int V = 9;  // Number of nodes in the graph
   int start = 0;
-  int goal = 5;
+  int goal = 8;
 
   int dist[V];     // dist[i] will hold the shortest distance from src to i
   int previous[V];
-
-   
+ 
   // Adjacensy matrix
-  int graph[V][V] = {{0, 4, 0, 0, 0, 0, 0, 8, 0},
+  int graph[9][9] = {{0, 4, 0, 0, 0, 0, 0, 8, 0},
                     {4, 0, 8, 0, 0, 0, 0, 11, 0},
                     {0, 8, 0, 7, 0, 4, 0, 0, 2},
                     {0, 0, 7, 0, 9, 14, 0, 0, 0},
@@ -104,8 +129,8 @@ int main()
 
   dijkstra(graph, start, V, dist, previous);
   //printSolution(dist, V);  // print the constructed distance array
-  printPath(previous, start, goal); // print the constructed path
+  int *path = printPath(previous, start, goal); // Get shorest path from start to goal, returned as an int array
 
   
-    return 0;
+    return *path;
 }
