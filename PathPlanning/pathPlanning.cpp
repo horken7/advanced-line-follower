@@ -50,7 +50,7 @@ void printPath(Edge previous[], int start, int goal)
     }
     else
     {
-      printf("Goal");
+      printf("Goal\n");
       break;
     }
   }
@@ -103,6 +103,7 @@ int main()
   edge0->firstNode = 0;
   edge0->secondNode = 1;
 
+
   Edge *edge1 = new Edge;
   edge1->weight =2;
   edge1->direction = 1;
@@ -150,8 +151,8 @@ int main()
 
 
   dijkstra(graph, start, V, dist, previous);
-  printSolution(dist, V);  // print the constructed distance array
-  //printPath(previous, start, goal);
+  //printSolution(dist, V);  // print the constructed distance array
+  printPath(previous, start, goal);
 
   return 0;
 }
