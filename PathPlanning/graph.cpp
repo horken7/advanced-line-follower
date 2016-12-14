@@ -1,86 +1,121 @@
-#include<iostream>
+#include "graph.h"
 
-using namespace std;
+Graph::Graph() {
+  numEdges = -1;
+  numNodes = -1;
+  adjMat = NULL;
 
-struct Edge {
-  float length;
-  float direction;
-  int startNode;
-  int endNode;
-  Edge *next;
-};
-
-typedef Edge *Graph;
-
-Edge nullEdge = {0, 0, -1, 0};
-
-void appendEdge(Edge *graph, float length, float direction, int startNode, int endNode);
-void printGraph(Edge &);
-int sizeList(Graph &graph);
-
-int main(int argc, char *argv[])
-{
-  Graph graph;
-
-  Edge *edge1 = new Edge;
-  edge1->length = 3;
-  edge1->direction = 3;
-  edge1->startNode = 3;
-  edge1->endNode = 4;
-
-  Edge *edge2 = new Edge;
-  edge2->length = 3;
-  edge2->direction = 3;
-  edge2->startNode = 3;
-  edge2->endNode = 4;
-
-  Edge *edge3 = new Edge;
-  edge3->length = 3;
-  edge3->direction = 3;
-  edge3->startNode = 3;
-  edge3->endNode = 4;
-
-  edge1->next = edge2;
-  edge2->next = edge3;
-  edge3->next = NULL;
-
-  graph = edge1;
-  int size = sizeList(graph);
-  cout << size << endl;
-
-  appendEdge(graph, 3, 3, 3, 3);
-
-  size = sizeList(graph);
-  cout << size << endl;
-  return 0;
+  edges = new Edge;
+  edges->length = -1;
+  edges->direction = 0;
+  edges->startNode = 0;
+  edges->endNode = 0;
+  edges->next = NULL;
 }
 
-void appendEdge(Edge *graph, float length, float direction, int startNode, int endNode) {
+Graph::~Graph() {
+  if (adjMat) {
+    delete adjMat;
+    adjMat = NULL;
+  }
+
+  if (numEdges > 0) {
+    while (edges->length > 0) {
+      Edge *currentEdge = edges;
+      edges = edges->next;
+      delete currentEdge;
+      currentEdge = NULL;
+    }
+
+    delete edges;
+    edges = NULL;
+  }
+
+  else if (numEdges = 0) {
+    delete edges;
+    edges = NULL;
+  }
+}
+
+void Graph::countEdges() {
+
+  Edge *edge = edges;
+  int size = 1;
+  while (edge->length < 0) {
+    size++;
+    edge = edge->next;
+  }
+
+  numEdges = size;
+}
+
+void Graph::appendEdge(int length, int direction, int startNode, int endNode) {
+
+  if (startNode >= endNode) {
+    cout << "start node of an edge must be less than end node";
+    return;
+  }
 
   Edge *newEdge = new Edge;
   newEdge->length = length;
   newEdge->direction = direction;
   newEdge->startNode = startNode;
   newEdge->endNode = endNode;
-  newEdge->next = graph;
-  graph = newEdge;
-
-
+  newEdge->next = edges;
+  edges = newEdge;
 }
 
-void printGraph(Edge &) {
-  
-}
-
-
-int sizeList(Graph &graph) {
-
-  Edge *edge = graph;
-  int size = 1;
-  while (edge->next != NULL) {
-    size++;
-    edge = edge->next;
+int Graph::edgeTotal() {
+  if (numEdges < 0) {
+    countEdges();
   }
 
-  return size;
+  return numEdges;
 }
+
+int Graph::nodeTotal() {
+  if (numNodes < 0) {
+    countNodes();
+  }
+
+  return numEdges;
+}
+
+void Graph::countNodes() {
+  Edge *edge = edges;
+  int nodeCount = 0;
+  while (edge->length > 0) {
+
+    if (edge->endNode >= nodeCount) {
+      numNodes = edge->endNode;
+    }
+    edge = edge->next;
+  }
+  if (nodeCount > 0) {
+    numNodes = nodeCount;
+  }
+}
+
+int *Graph::getAdjMat() {
+  if (adjMat) {
+    return adjMat;
+  }
+
+  int width = nodeTotal();
+  if (width <= 0) {
+    return NULL;
+  }
+
+  adjMat = new int[width * width];
+  Edge *currentEdge = edges;
+
+  while(currentEdge->length > 0) {
+    int startNode = currentEdge->startNode;
+    int endNode = currentEdge->endNode;
+    adjMat[width * startNode +endNode] = currentEdge->length;
+    currentEdge = currentEdge->next;
+  }
+
+  return adjMat;
+}
+
