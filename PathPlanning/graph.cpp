@@ -15,7 +15,7 @@ Graph::Graph() {
 
 Graph::~Graph() {
   if (adjMat) {
-    delete adjMat;
+    delete[] adjMat;
     adjMat = NULL;
   }
 
