@@ -31,7 +31,7 @@ Graph::~Graph() {
     edges = NULL;
   }
 
-  else if (numEdges = 0) {
+  else if (numEdges == 0) {
     delete edges;
     edges = NULL;
   }
@@ -39,7 +39,7 @@ Graph::~Graph() {
 
 void Graph::countEdges() {
 
-  Edge *edge = edges;
+  Edge *edge == edges;
   int size = 1;
   while (edge->length < 0) {
     size++;
