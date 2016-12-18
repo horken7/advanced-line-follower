@@ -36,7 +36,7 @@ int * getPath(int *previous, int start, int goal)
 {
   int count = countPath(previous, start, goal);
 
-  int path[count+1];  // Using a fixed size array
+  int * path = new int[count+1];  // Using a fixed size array
   int i = goal;
   path[count] = i;
   // Adding the nodes to the array
