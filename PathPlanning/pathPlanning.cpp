@@ -6,7 +6,7 @@
   
 // A utility function to find the vertex with minimum distance value, from
 // the set of vertices not yet included in shortest path tree
-int minDistance(int dist[], bool sptSet[], int V)
+int minDistance(int *dist, bool *sptSet, int V)
 {
    // Initialize min value
    int min = INT_MAX, min_index;
@@ -35,7 +35,6 @@ int countPath(int *previous, int start, int goal)
 int * getPath(int *previous, int start, int goal)
 {
   int count = countPath(previous, start, goal);
-
   int * path = new int[count+1];  // Using a fixed size array
   int i = goal;
   path[count] = i;
@@ -50,7 +49,7 @@ int * getPath(int *previous, int start, int goal)
   
 // Funtion that implements Dijkstra's single source shortest path algorithm
 // for a graph represented using adjacency matrix representation
-void dijkstra(int graph[], int src, int V, int *dist, int *previous)
+void dijkstra(int *graph, int src, int V, int *dist, int *previous)
 { 
      bool sptSet[V]; // sptSet[i] will true if vertex i is included in shortest
                      // path tree or shortest distance from src to i is finalized
@@ -74,7 +73,7 @@ void dijkstra(int graph[], int src, int V, int *dist, int *previous)
   
        // Update dist value of the adjacent vertices of the picked vertex.
        for (int v = 0; v < V; v++)
-  
+       {
          // Update dist[v] only if is not in sptSet, there is an edge from 
          // u to v, and total weight of path from src to  v through u is 
          // smaller than current value of dist[v]
@@ -84,11 +83,12 @@ void dijkstra(int graph[], int src, int V, int *dist, int *previous)
             dist[v] = dist[u] + graph[(u*V)+v];
             previous[v] = u;
          }
+       }
      }
 }
   
 // driver program to test above function
-int calculateShortestPath(int *graph, int start, int goal, int V)
+int *calculateShortestPath(int *graph, int start, int goal, int V)
 {
   int dist[V];      // dist[i] will hold the shortest distance from start to i
   int previous[V];  // previous[i] will hold previous node for shortest path from start 
@@ -97,5 +97,5 @@ int calculateShortestPath(int *graph, int start, int goal, int V)
   dijkstra(graph, start, V, dist, previous);
   int *path = getPath(previous, start, goal); // Get shorest path from start to goal, returned as an int array
 
-  return *path;
+  return path;
 }

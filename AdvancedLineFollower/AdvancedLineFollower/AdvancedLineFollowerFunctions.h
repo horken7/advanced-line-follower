@@ -22,12 +22,12 @@
 // Motor speed when turning. TURN_SPEED should always
 // have a positive value, otherwise the Zumo will turn
 // in the wrong direction.
-#define TURN_SPEED 300
+#define TURN_SPEED 200
 
 // Motor speed when driving straight. SPEED should always
 // have a positive value, otherwise the Zumo will travel in the
 // wrong direction.
-#define SPEED 800 
+#define SPEED 600 
 
 // Thickness of your line in inches
 #define LINE_THICKNESS .75

@@ -39,7 +39,7 @@ Graph::~Graph() {
 
 void Graph::countEdges() {
 
-  Edge *edge == edges;
+  Edge *edge = edges;
   int size = 1;
   while (edge->length < 0) {
     size++;
@@ -118,4 +118,3 @@ int *Graph::getAdjMat() {
 
   return adjMat;
 }
-

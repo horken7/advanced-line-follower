@@ -1,7 +1,8 @@
 #include "AdvancedLineFollowerFunctions.h"
-//#include "graph.h"
+#include "graph.h"
+#include "pathPlanning.h"
 
-//Graph graph;
+Graph graph;
 
 void setup() {
   calibrate_sensors();
@@ -19,10 +20,14 @@ void loop()
 
 void navigator()
 {
-  /*
-  graph.appendEdge(1,1,0,1);
-  graph.appendEdge(1,1,0,2);
-  graph.appendEdge(1,1,1,2);
-  graph.appendEdge(1,1,2,3);
-  */
+  
+  graph.appendEdge(2,1,0,1);
+  graph.appendEdge(4,1,1,2);
+  graph.appendEdge(3,1,0,3);
+  graph.appendEdge(5,1,2,3);
+  int size = graph.nodeTotal();
+  int *adjMtx = graph.getAdjMat();
+  for(int i=0; i<3;i++){
+    Serial.print(path[i]);
+  }
 }
