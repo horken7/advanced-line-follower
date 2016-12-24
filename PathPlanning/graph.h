@@ -11,6 +11,8 @@ struct Edge {
 
 class Graph {
   public:
+  Graph();
+  ~Graph();
   void appendEdge(int length, int direction, int startNode, int endNode);
   int edgeTotal();
   int nodeTotal();

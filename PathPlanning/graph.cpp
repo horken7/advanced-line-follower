@@ -1,4 +1,6 @@
+#include <iostream>
 #include "graph.h"
+using namespace std;
 
 Graph::Graph() {
   numEdges = -1;
@@ -11,9 +13,13 @@ Graph::Graph() {
   edges->startNode = 0;
   edges->endNode = 0;
   edges->next = NULL;
+
 }
 
 Graph::~Graph() {
+
+  countEdges();
+  countNodes(); 
   if (adjMat) {
     delete[] adjMat;
     adjMat = NULL;
@@ -38,10 +44,9 @@ Graph::~Graph() {
 }
 
 void Graph::countEdges() {
-
   Edge *edge = edges;
-  int size = 1;
-  while (edge->length < 0) {
+  int size = 0;
+  while (edge->length > 0 && edge->next != NULL) {
     size++;
     edge = edge->next;
   }
@@ -63,7 +68,9 @@ void Graph::appendEdge(int length, int direction, int startNode, int endNode) {
   newEdge->endNode = endNode;
   newEdge->next = edges;
   edges = newEdge;
+  countEdges();
 }
+
 
 int Graph::edgeTotal() {
   if (numEdges < 0) {
@@ -83,11 +90,10 @@ int Graph::nodeTotal() {
 
 void Graph::countNodes() {
   Edge *edge = edges;
-  int nodeCount = 0;
-  while (edge->length > 0) {
-
+  int nodeCount = 1;
+  while (edge->length > 0 && edge->next != NULL) {
     if (edge->endNode >= nodeCount) {
-      numNodes = edge->endNode;
+      nodeCount = edge->endNode;
     }
     edge = edge->next;
   }
@@ -107,14 +113,18 @@ int *Graph::getAdjMat() {
   }
 
   adjMat = new int[width * width];
+  for(int i = 0; i < (width * width); i++) {
+   adjMat[i] = 0;
+  }
   Edge *currentEdge = edges;
 
   while(currentEdge->length > 0) {
     int startNode = currentEdge->startNode;
     int endNode = currentEdge->endNode;
-    adjMat[width * startNode +endNode] = currentEdge->length;
+    adjMat[width * startNode + endNode - 2] = currentEdge->length;
     currentEdge = currentEdge->next;
   }
 
   return adjMat;
 }
+
