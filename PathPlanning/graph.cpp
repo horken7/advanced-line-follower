@@ -1,6 +1,9 @@
-#include <iostream>
+#include <iostream> 
 #include "graph.h"
 using namespace std;
+// Directions N=1, E=2, S=3, W=4
+
+
 
 Graph::Graph() {
   numEdges = -1;
@@ -52,6 +55,7 @@ void Graph::countEdges() {
   }
 
   numEdges = size;
+  printf("%d\n", size);
 }
 
 void Graph::appendEdge(int length, int direction, int startNode, int endNode) {

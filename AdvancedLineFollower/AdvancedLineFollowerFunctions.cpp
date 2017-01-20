@@ -40,6 +40,8 @@ void followSegment()
      
     // The offset_from_center should be 0 when we are on the line.
     offset_from_center = ((int)position) - 2500;
+
+    printSensorReadingsToSerial(sensors, position, millis_curr);
      
     // Compute the difference between the two motor power settings,
     // m1 - m2.  If this is a positive number the robot will turn
