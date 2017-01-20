@@ -27,7 +27,7 @@
 // Motor speed when driving straight. SPEED should always
 // have a positive value, otherwise the Zumo will travel in the
 // wrong direction.
-#define SPEED 200 
+#define SPEED 400 
 
 // Thickness of your line in inches
 #define LINE_THICKNESS .75
