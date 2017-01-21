@@ -1,5 +1,6 @@
 #include <iostream>
 #include "graph.h"
+
 using namespace std;
 
 Graph::Graph() {
@@ -85,13 +86,14 @@ int Graph::nodeTotal() {
     countNodes();
   }
 
-  return numEdges;
+  return numNodes;
 }
 
 void Graph::countNodes() {
   Edge *edge = edges;
-  int nodeCount = 1;
+  int nodeCount = 0;
   while (edge->length > 0 && edge->next != NULL) {
+
     if (edge->endNode >= nodeCount) {
       nodeCount = edge->endNode;
     }
@@ -100,6 +102,7 @@ void Graph::countNodes() {
   if (nodeCount > 0) {
     numNodes = nodeCount;
   }
+
 }
 
 int *Graph::getAdjMat() {
