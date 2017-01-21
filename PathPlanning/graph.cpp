@@ -1,5 +1,7 @@
-#include "graph.h"
 #include <iostream>
+#include <vector>
+
+#include "graph.h"
 
 using namespace std;
 // Directions N=1, E=2, S=3, W=4
@@ -129,4 +131,236 @@ int *Graph::getAdjMat() {
   }
 
   return adjMat;
+}
+
+void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
+  // prevNode = 4;
+  // curNode = 2;
+  // nextNode = 1;
+
+  bool negCurrentHeading = false;
+  bool negNewHeading = false;
+
+  if (curNode < prevNode) {
+    negCurrentHeading = true;
+  }
+
+  if (nextNode < curNode) {
+    negNewHeading = true;
+  }
+
+  int currentHeading = 0;
+  int newHeading = 0;
+
+  Edge *edge = edges;
+  if (negCurrentHeading && negNewHeading) {
+    // serach for current node as the start node for current heading
+    // serach for next node as the start node for new heading
+    int completeSearch = 0;
+    while (edge->length > 0) {
+      if (edge->startNode == curNode && edge->endNode == prevNode) {
+        currentHeading = (edge->direction + 1 % 4) + 1;
+        completeSearch++;
+      }
+
+      else if (edge->startNode == nextNode && edge->endNode == curNode) {
+        newHeading = (edge->direction + 1 % 4) + 1;
+        completeSearch++;
+      }
+
+      else if (completeSearch >= 2) {
+        break;
+      }
+      edge = edge->next;
+    }
+  }
+
+  else if (negCurrentHeading && !negNewHeading) {
+    // serach for current node as the start node for current heading
+    // serach for current node as the start node for new heading
+    int completeSearch = 0;
+    while (edge->length > 0) {
+      if (edge->startNode == curNode && edge->endNode == prevNode) {
+        currentHeading = (edge->direction + 1 % 4) + 1;
+        completeSearch++;
+      }
+
+      else if (edge->startNode == curNode && edge->endNode == nextNode) {
+        newHeading = edge->direction;
+        completeSearch++;
+      }
+
+      else if (completeSearch >= 2) {
+        break;
+      }
+      edge = edge->next;
+    }
+  }
+
+  else if (!negCurrentHeading && negNewHeading) {
+    // serach for prev node as the start node for current heading
+    // serach for next node as the start node for new heading
+    int completeSearch = 0;
+    while (edge->length > 0) {
+      if (edge->startNode == prevNode && edge->endNode == curNode) {
+        currentHeading = edge->direction;
+        completeSearch++;
+      }
+
+      else if (edge->startNode == nextNode && edge->endNode == curNode) {
+        newHeading = (edge->direction + 1 % 4) + 1;
+        completeSearch++;
+      }
+
+      else if (completeSearch >= 2) {
+        break;
+      }
+      edge = edge->next;
+    }
+  }
+
+  else if (!negCurrentHeading && !negNewHeading) {
+    // serach for prev node as the start node for current heading
+    // serach for cur node as the start node for new heading
+    int completeSearch = 0;
+    while (edge->length > 0) {
+      if (edge->startNode == prevNode && edge->endNode == curNode) {
+        currentHeading = edge->direction;
+        completeSearch++;
+      }
+
+      else if (edge->startNode == curNode && edge->endNode == nextNode) {
+        newHeading = edge->direction;
+        completeSearch++;
+      }
+
+      else if (completeSearch >= 2) {
+        break;
+      }
+      edge = edge->next;
+    }
+  }
+
+  /**************************************************/
+
+  switch (currentHeading) {
+  case 1: {
+    switch (newHeading) {
+    case 1: {
+      cout << "Straight \n";
+      break;
+    }
+
+    case 2: {
+      cout << "Right \n";
+      break;
+    }
+
+    case 3: {
+      cout << "Back\n";
+      break;
+    }
+
+    case 4: {
+      cout << "left \n";
+      break;
+    }
+
+    default:
+      cout << "STOP\n";
+      break;
+    }
+    break;
+  }
+
+  case 2: {
+    switch (newHeading) {
+    case 1: {
+      cout << "Left \n";
+      break;
+    }
+
+    case 2: {
+      cout << "Straight \n";
+      break;
+    }
+
+    case 3: {
+      cout << "Right \n";
+      break;
+    }
+
+    case 4: {
+      cout << "Back \n";
+      break;
+    }
+
+    default:
+      cout << "STOP\n";
+      break;
+    }
+    break;
+  }
+  case 3: {
+    switch (newHeading) {
+    case 1: {
+      cout << "Back \n";
+      break;
+    }
+
+    case 2: {
+      cout << "Left \n";
+      break;
+    }
+
+    case 3: {
+      cout << "Straight \n";
+      break;
+    }
+
+    case 4: {
+      cout << "Right \n";
+      break;
+    }
+
+    default:
+      cout << "STOP\n";
+      break;
+    }
+    break;
+  }
+  case 4: {
+    switch (newHeading) {
+    case 1: {
+      cout << "Right \n";
+      break;
+    }
+
+    case 2: {
+      cout << "Back \n";
+      break;
+    }
+
+    case 3: {
+      cout << "Left \n";
+      break;
+    }
+
+    case 4: {
+      cout << "Straight \n";
+      break;
+    }
+
+    default:
+      cout << "STOP\n";
+      break;
+    }
+    break;
+  }
+
+  default: {
+    cout << "STOP\n";
+    break;
+  }
+  }
 }

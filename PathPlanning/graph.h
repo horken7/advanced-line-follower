@@ -17,6 +17,7 @@ class Graph {
   int edgeTotal();
   int nodeTotal();
   int * getAdjMat();
+  void getDirectionCart(int prevNode, int curNode, int nextNode);
 
 
 
