@@ -1,4 +1,8 @@
 #include "pathPlanning.h"
+#include <stdio.h>
+
+int INT_MAX = 999999999;
+
 
 // A C / C++ program for Dijkstra's single source shortest path algorithm.
 // The program is for adjacency matrix representation of the graph
@@ -44,6 +48,12 @@ int * getPath(int *previous, int start, int goal)
     path[j] = previous[i];
     i = previous[i];
   }
+
+  for (int i = 0; i <= count; i++)
+  	// Convert to indexing starting from 1 used in graph
+  {
+  	path[i] = path[i]+1;
+  }
   return path;
 } 
   
@@ -59,7 +69,7 @@ void dijkstra(int *graph, int src, int V, int *dist, int *previous)
         dist[i] = INT_MAX, sptSet[i] = false;
   
      // Distance of source vertex from itself is always 0
-     dist[src] = 0;
+     dist[src] = 0; previous[src] = 0;
   
      // Find shortest path for all vertices
      for (int count = 0; count < V-1; count++)
@@ -88,8 +98,11 @@ void dijkstra(int *graph, int src, int V, int *dist, int *previous)
 }
   
 // driver program to test above function
+// V is the number of nodes
 int *calculateShortestPath(int *graph, int start, int goal, int V)
 {
+  start = start-1;
+  goal = goal-1;
   int dist[V];      // dist[i] will hold the shortest distance from start to i
   int previous[V];  // previous[i] will hold previous node for shortest path from start 
       
