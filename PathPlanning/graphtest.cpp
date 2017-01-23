@@ -52,7 +52,7 @@ int main() {
 
   for (int i = 0; i < 5; i++) {
     if (i == 0) {
-      graph.getDirectionCart(4, path2[i], path2[i + 1]);
+      graph.getDirectionCart(2, path2[i], path2[i + 1]);
     }
     else {
       graph.getDirectionCart(path2[i - 1], path2[i], path2[i + 1]);
