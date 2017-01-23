@@ -27,50 +27,50 @@ void followSegment()
   unsigned long millis_curr;
 
   button.waitForButton();
-  
+
   while(1)
-  {     
+  {
     // Delay to make actions each timestep
     millis_start = millis();
     while(100 < (millis()-millis_start));
     millis_curr = millis();
-    
+
     // Get the position of the line.
     position = reflectanceSensors.readLine(sensors);
-     
+
     // The offset_from_center should be 0 when we are on the line.
     offset_from_center = ((int)position) - 2500;
 
     printSensorReadingsToSerial(sensors, position, millis_curr);
-     
+
     // Compute the difference between the two motor power settings,
     // m1 - m2.  If this is a positive number the robot will turn
     // to the left.  If it is a negative number, the robot will
     // turn to the right, and the magnitude of the number determines
     // the sharpness of the turn.
     power_difference = offset_from_center / 3;
-     
+
     // Compute the actual motor settings.  We never set either motor
     // to a negative value.
     if(power_difference > SPEED)
       power_difference = SPEED;
     if(power_difference < -SPEED)
       power_difference = -SPEED;
-     
+
     if(power_difference < 0)
       motors.setSpeeds(SPEED + power_difference, SPEED);
     else
       motors.setSpeeds(SPEED, SPEED - power_difference);
-     
+
     // We use the inner four sensors (1, 2, 3, and 4) for
     // determining whether there is a line straight ahead, and the
     // sensors 0 and 5 for detecting lines going to the left and
     // right.
-     
+
     if(!ABOVE_LINE(sensors[0]) && !ABOVE_LINE(sensors[1]) && !ABOVE_LINE(sensors[2]) && !ABOVE_LINE(sensors[3]) && !ABOVE_LINE(sensors[4]) && !ABOVE_LINE(sensors[5]))
     {
       // There is no line visible ahead, and we didn't see any
-      // intersection.  Must be a dead end.            
+      // intersection.  Must be a dead end.
 
       motors.setSpeeds(0,0);
       return;
@@ -81,7 +81,7 @@ void followSegment()
       motors.setSpeeds(0,0);
       return;
     }
-   
+
   }
 }
 
@@ -91,7 +91,7 @@ void followSegment()
 INTERSECTION
 
 When the robot is at an intersection, calling intersection()
-will analyse the intersection and determine which kind of 
+will analyse the intersection and determine which kind of
 intersection it is
 
 @return byte intersection type where path exist:
@@ -225,31 +225,31 @@ void turn(char dir)
   unsigned short count = 0;
   unsigned short last_status = 0;
   unsigned int sensors[6];
-  
+
   // dir tests for which direction to turn
   switch(dir)
   {
-  
-  // Since we're using the sensors to coordinate turns instead of timing them, 
-  // we can treat a left turn the same as a direction reversal: they differ only 
-  // in whether the zumo will turn 90 degrees or 180 degrees before seeing the 
+
+  // Since we're using the sensors to coordinate turns instead of timing them,
+  // we can treat a left turn the same as a direction reversal: they differ only
+  // in whether the zumo will turn 90 degrees or 180 degrees before seeing the
   // line under the sensor. If 'B' is passed to the turn function when there is a
   // left turn available, then the Zumo will turn onto the left segment.
     case 'L':
       // Turn left.
       motors.setSpeeds(-TURN_SPEED, TURN_SPEED);
-      
+
       // This while loop monitors line position
-      // until the turn is complete. 
+      // until the turn is complete.
       while(count < 2)
       {
         reflectanceSensors.readLine(sensors);
-    
-        // Increment count whenever the state of the sensor changes 
-        // (white->black and black->white) since the sensor should 
-        // pass over 1 line while the robot is turning, the final 
+
+        // Increment count whenever the state of the sensor changes
+        // (white->black and black->white) since the sensor should
+        // pass over 1 line while the robot is turning, the final
         // count should be 2
-        count += ABOVE_LINE(sensors[1]) ^ last_status; 
+        count += ABOVE_LINE(sensors[1]) ^ last_status;
         last_status = ABOVE_LINE(sensors[1]);
       }
     motors.setSpeeds(0, 0);
@@ -257,29 +257,29 @@ void turn(char dir)
     case 'B':
       // Turn back.
       motors.setSpeeds(-TURN_SPEED, TURN_SPEED);
-      
+
       // This while loop monitors line position
-      // until the turn is complete. 
+      // until the turn is complete.
       while(count < 2)
       {
         reflectanceSensors.readLine(sensors);
-    
-        // Increment count whenever the state of the sensor changes 
-        // (white->black and black->white) since the sensor should 
-        // pass over 1 line while the robot is turning, the final 
+
+        // Increment count whenever the state of the sensor changes
+        // (white->black and black->white) since the sensor should
+        // pass over 1 line while the robot is turning, the final
         // count should be 2
-        count += ABOVE_LINE(sensors[1]) ^ last_status; 
+        count += ABOVE_LINE(sensors[1]) ^ last_status;
         last_status = ABOVE_LINE(sensors[1]);
       }
     motors.setSpeeds(0, 0);
     break;
-    
+
     case 'R':
       // Turn right.
       motors.setSpeeds(TURN_SPEED, -TURN_SPEED);
-      
+
       // This while loop monitors line position
-      // until the turn is complete. 
+      // until the turn is complete.
       while(count < 2)
       {
         reflectanceSensors.readLine(sensors);
@@ -288,7 +288,7 @@ void turn(char dir)
       }
     motors.setSpeeds(0, 0);
     break;
-  
+
     case 'S':
     // Don't do anything!
     motors.setSpeeds(0, 0);
@@ -313,10 +313,10 @@ void calibrate_sensors()
   unsigned int sensors[6];
   unsigned short count = 0;
   unsigned short last_status = 0;
-  int turn_direction = 1;  
-  
+  int turn_direction = 1;
+
   reflectanceSensors.init();
-  
+
   delay(500);
   pinMode(13, OUTPUT);
   digitalWrite(13, HIGH);        // turn on LED to indicate we are in calibration mode
@@ -324,50 +324,50 @@ void calibrate_sensors()
   // Wait for button to be pressed before initiate calibration
   button.waitForButton();
 
-  
+
   // Calibrate the Zumo by sweeping it from left to right
   for(int i = 0; i < 4; i ++)
   {
     // Zumo will turn clockwise if turn_direction = 1.
     // If turn_direction = -1 Zumo will turn counter-clockwise.
     turn_direction *= -1;
-  
+
     // Turn direction.
     motors.setSpeeds(turn_direction * TURN_SPEED, -1*turn_direction * TURN_SPEED);
-      
+
     // This while loop monitors line position
-    // until the turn is complete. 
+    // until the turn is complete.
     while(count < 2)
     {
       reflectanceSensors.calibrate();
       reflectanceSensors.readLine(sensors);
       if(turn_direction < 0)
       {
-        // If the right  most sensor changes from (over white space -> over 
+        // If the right  most sensor changes from (over white space -> over
         // line or over line -> over white space) add 1 to count.
         count += ABOVE_LINE(sensors[5]) ^ last_status;
         last_status = ABOVE_LINE(sensors[5]);
       }
       else
       {
-        // If the left most sensor changes from (over white space -> over 
+        // If the left most sensor changes from (over white space -> over
         // line or over line -> over white space) add 1 to count.
         count += ABOVE_LINE(sensors[0]) ^ last_status;
-        last_status = ABOVE_LINE(sensors[0]);   
+        last_status = ABOVE_LINE(sensors[0]);
       }
     }
-  
+
     count = 0;
     last_status = 0;
   }
-  
+
   // Turn left.
   turn('L');
-  
+
   motors.setSpeeds(0, 0);
-  
+
   // Turn off LED to indicate we are through with calibration
-  digitalWrite(13, LOW);  
+  digitalWrite(13, LOW);
 }
 
 
@@ -376,7 +376,7 @@ void calibrate_sensors()
 PRINT SENSOR READINGS TO SERIAL
 
 Prints the sensor readings to serial as csv values,
-in following order: 
+in following order:
 1-6: Individual calibrated sensor values
 7: Weighted average of sensor readings
 8: Timestamp
