@@ -77,6 +77,8 @@ void followSegment()
     {
       // Found an intersection.
       // Make sure we are over the line
+      delay(OVERSHOOT(LINE_THICKNESS));
+      motors.setSpeeds(0,0);
       return;
     }
 
@@ -303,8 +305,11 @@ void turn(char dir)
       motors.setSpeeds(0, 0);
       button.waitForButton();
     break;
+
   }
+  //button.waitForButton();
 }
+
 
 
 /*********************************************

@@ -12,6 +12,9 @@ void setup() {
 
 void loop() 
 {
+  //followSegment();
+  //turn('L');
+
   navigator();
 }
 
@@ -54,3 +57,4 @@ void navigator()
     followSegment();
   }
 }
+
