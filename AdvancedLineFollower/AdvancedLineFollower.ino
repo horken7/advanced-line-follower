@@ -12,9 +12,7 @@ void setup() {
 
 void loop() 
 {
-  //navigator();
-  followSegment();
-  turn('L');
+  navigator();
 }
 
 void navigator()
@@ -34,9 +32,9 @@ void navigator()
 
   int *adjMat = graph.getAdjMat();
 
-  int start = 4;
+  int start = 3;
   int goal = 1;
-  int initialState = 2;
+  int initialState = 1;
 
   int *path = calculateShortestPath(adjMat, start, goal, x);
   int nrEdges = path[0];

@@ -1,6 +1,3 @@
-//#include <iostream>
-//#include <vector>
-
 #include "graph.h"
 #include "AdvancedLineFollowerFunctions.h"
 
