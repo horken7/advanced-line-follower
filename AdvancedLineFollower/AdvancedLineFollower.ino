@@ -2,7 +2,6 @@
 #include "graph.h"
 #include "pathPlanning.h"
 
-//Graph graph;
 
 void setup() {
   calibrate_sensors();
@@ -13,15 +12,16 @@ void setup() {
 
 void loop() 
 {
-  navigator();
-  
+  //navigator();
+  followSegment();
+  turn('L');
 }
 
 void navigator()
 {
   Graph graph;
 
-  graph.appendEdge(1, 2, 1, 2);
+  graph.appendEdge(100, 2, 1, 2);
   graph.appendEdge(2, 1, 1, 3);
 
   graph.appendEdge(3, 2, 3, 4);
@@ -34,20 +34,25 @@ void navigator()
 
   int *adjMat = graph.getAdjMat();
 
-  int start = 1;
-  int goal = 5;
+  int start = 4;
+  int goal = 1;
+  int initialState = 2;
 
   int *path = calculateShortestPath(adjMat, start, goal, x);
+  int nrEdges = path[0];
+  for(int i = 0; i<= nrEdges; i++){
+    Serial.println(path[i]);
+    }
 
-  Edge[] theMap = getDirectionsCart(path);
-
-  int i = 0;
-  nextTurn = 0;
-  while(nextTurn>0)
-  {
-    followSegment();
-    nextTurn = theMap[i];
-    i++;
-  }
+  followSegment();
   
+  for (int i = 1; i <= nrEdges; i++) {
+    if (i == 1) {
+      graph.getDirectionCart(initialState, path[i], path[i + 1]);
+    }
+    else {
+      graph.getDirectionCart(path[i - 1], path[i], path[i + 1]);
+    }
+    followSegment();
+  }
 }

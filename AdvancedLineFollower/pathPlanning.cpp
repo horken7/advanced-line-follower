@@ -1,7 +1,7 @@
 #include "pathPlanning.h"
-//#include <stdio.h>
+#include <stdio.h>
 
-int INT_MAX = 999999999;
+//int INT_MAX = 10000;
 
 
 // A C / C++ program for Dijkstra's single source shortest path algorithm.

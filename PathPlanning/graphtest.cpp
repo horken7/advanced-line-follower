@@ -27,7 +27,7 @@ int main() {
 
   int *path2 = calculateShortestPath(adjMat, start, goal, x);
 
-  for (int i = 0; i < 5; i++)
+  for (int i = 0; i < 6; i++)
   {
   	printf("%d\n", path2[i]);
   }
@@ -50,8 +50,8 @@ int main() {
   //prebious node = 4;
   //current node = 2;
 
-  for (int i = 0; i < 5; i++) {
-    if (i == 0) {
+  for (int i = 1; i <= path2[0]; i++) {
+    if (i == 1) {
       graph.getDirectionCart(2, path2[i], path2[i + 1]);
     }
     else {

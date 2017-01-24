@@ -1,8 +1,8 @@
 #include "AdvancedLineFollowerFunctions.h"
 
 ZumoReflectanceSensorArray reflectanceSensors;
-ZumoMotors motors;
 Pushbutton button(ZUMO_BUTTON);
+ZumoMotors motors;
 
 /*********************************************
 
@@ -26,13 +26,11 @@ void followSegment()
   unsigned long millis_start;
   unsigned long millis_curr;
 
-  button.waitForButton();
-
   while(1)
   {
     // Delay to make actions each timestep
     millis_start = millis();
-    while(100 < (millis()-millis_start));
+    while(100 > (millis()-millis_start));
     millis_curr = millis();
 
     // Get the position of the line.
@@ -41,7 +39,7 @@ void followSegment()
     // The offset_from_center should be 0 when we are on the line.
     offset_from_center = ((int)position) - 2500;
 
-    printSensorReadingsToSerial(sensors, position, millis_curr);
+    //printSensorReadingsToSerial(sensors, position, millis_curr);
 
     // Compute the difference between the two motor power settings,
     // m1 - m2.  If this is a positive number the robot will turn
@@ -78,7 +76,7 @@ void followSegment()
     else if(ABOVE_LINE(sensors[0]) || ABOVE_LINE(sensors[5]))
     {
       // Found an intersection.
-      motors.setSpeeds(0,0);
+      // Make sure we are over the line
       return;
     }
 
@@ -106,7 +104,6 @@ intersection it is
 @author Seeralan Sarvaharman, Ben Morris
 
 *********************************************/
-
 byte intersection() {
   bool found_left = 0;
   bool found_straight = 0;
@@ -197,7 +194,6 @@ byte intersection() {
 }
 
 
-
 /*********************************************
 
 TURN
@@ -225,7 +221,7 @@ void turn(char dir)
   unsigned short count = 0;
   unsigned short last_status = 0;
   unsigned int sensors[6];
-
+  
   // dir tests for which direction to turn
   switch(dir)
   {
@@ -275,6 +271,11 @@ void turn(char dir)
     break;
 
     case 'R':
+      unsigned long millis_start2;
+      motors.setSpeeds(SPEED, SPEED);
+      millis_start2 = millis();
+      while(100 > (millis()-millis_start2));
+      motors.setSpeeds(0, 0);
       // Turn right.
       motors.setSpeeds(TURN_SPEED, -TURN_SPEED);
 
@@ -290,8 +291,17 @@ void turn(char dir)
     break;
 
     case 'S':
-    // Don't do anything!
-    motors.setSpeeds(0, 0);
+      // Go straight
+      unsigned long millis_start;
+      motors.setSpeeds(SPEED, SPEED);
+      millis_start = millis();
+      while(100 > (millis()-millis_start));
+      motors.setSpeeds(0, 0);
+    break;
+
+    case 'X':
+      motors.setSpeeds(0, 0);
+      button.waitForButton();
     break;
   }
 }
@@ -314,6 +324,8 @@ void calibrate_sensors()
   unsigned short count = 0;
   unsigned short last_status = 0;
   int turn_direction = 1;
+
+  button.waitForButton();
 
   reflectanceSensors.init();
 
@@ -368,6 +380,8 @@ void calibrate_sensors()
 
   // Turn off LED to indicate we are through with calibration
   digitalWrite(13, LOW);
+
+  button.waitForButton();
 }
 
 
