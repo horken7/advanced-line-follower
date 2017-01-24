@@ -1,5 +1,7 @@
 #include <iostream>
+#include <stdio.h>
 #include "graph.h"
+#include "pathPlanning.h"
 
 using namespace std;
 
@@ -7,12 +9,12 @@ int main() {
 
   Graph graph;
 
-  graph.appendEdge(1, 2, 1, 2);
+  graph.appendEdge(100, 2, 1, 2);
   graph.appendEdge(2, 1, 1, 3);
 
   graph.appendEdge(3, 2, 3, 4);
 
-  graph.appendEdge(4, 1, 2, 4);
+  graph.appendEdge(7, 1, 2, 4);
   graph.appendEdge(5, 3, 2, 5);
 
 
@@ -20,6 +22,16 @@ int main() {
 
   int *adjMat = graph.getAdjMat();
 
+  int start = 1;
+  int goal = 5;
+
+  int *path2 = calculateShortestPath(adjMat, start, goal, x);
+
+  for (int i = 0; i < 6; i++)
+  {
+  	printf("%d\n", path2[i]);
+  }
+  cout << "---------------------------------------\n";
   cout << "Adj Mat =   \n";
 
   for (int i = 0; i < (x * x); i++) {
@@ -38,15 +50,14 @@ int main() {
   //prebious node = 4;
   //current node = 2;
 
-  for (int i = 0; i < 5; i++) {
-    if (i == 0) {
-      graph.getDirectionCart(4, path[i], path[i + 1]);
+  for (int i = 1; i <= path2[0]; i++) {
+    if (i == 1) {
+      graph.getDirectionCart(2, path2[i], path2[i + 1]);
     }
     else {
-      graph.getDirectionCart(path[i - 1], path[i], path[i + 1]);
+      graph.getDirectionCart(path2[i - 1], path2[i], path2[i + 1]);
     }
   }
-
 
 
   return 0;

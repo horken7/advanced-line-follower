@@ -3,8 +3,7 @@
 #ifndef PATHPLANNING_H
 #define PATHPLANNING_H
 
-// const int INT_MAX = 999999999;
-// have to move def into cpp file when using iostream
+const int INT_MAX = 10000;
 
 int minDistance(int *dist, bool *sptSet, int V);
 

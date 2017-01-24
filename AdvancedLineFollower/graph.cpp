@@ -1,8 +1,5 @@
-#include <iostream>
-//#include <vector>
-
 #include "graph.h"
-//#include "AdvancedLineFollower/AdvancedLineFollowerFunctions.h"
+#include "AdvancedLineFollowerFunctions.h"
 
 using namespace std;
 // Directions N=1, E=2, S=3, W=4
@@ -248,30 +245,32 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
   case 1: {
     switch (newHeading) {
     case 1: {
-      cout << "Straight \n";
+      Serial.println("Straight");
+      turn('S');
       break;
     }
 
     case 2: {
-      cout << "Right \n";
-      //turn('R');
+      Serial.println("Right");
+      turn('R');
       break;
     }
 
     case 3: {
-      cout << "Back\n";
-      //turn('B');
+      Serial.println("Back");
+      turn('B');
       break;
     }
 
     case 4: {
-      cout << "left \n";
-      //turn('L');
+      Serial.println("Left");
+      turn('L');
       break;
     }
 
     default:
-      cout << "STOP\n";
+      Serial.println("STOP");
+      turn('X');
       break;
     }
     break;
@@ -280,30 +279,32 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
   case 2: {
     switch (newHeading) {
     case 1: {
-      cout << "Left \n";
-      //turn('L');
+      Serial.println("Left");
+      turn('L');
       break;
     }
 
     case 2: {
-      //cout << "Straight \n";
+      Serial.println("Straight");
+      turn('S');
       break;
     }
 
     case 3: {
-      //turn('R');
-      cout << "Right \n";
+      turn('R');
+      Serial.println("Right");
       break;
     }
 
     case 4: {
-      cout << "Back \n";
-      //turn('B');
+      Serial.println("Back");
+      turn('B');
       break;
     }
 
     default:
-      cout << "STOP\n";
+      Serial.println("STOP");
+      turn('X');
       break;
     }
     break;
@@ -311,30 +312,32 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
   case 3: {
     switch (newHeading) {
     case 1: {
-      cout << "Back \n";
-      //turn('B');
+      Serial.println("Back");
+      turn('B');
       break;
     }
 
     case 2: {
-      cout << "Left \n";
-      //turn('L');
+      Serial.println("Left");
+      turn('L');
       break;
     }
 
     case 3: {
-      cout << "Straight \n";
+      Serial.println("Straight");
+      turn('S');
       break;
     }
 
     case 4: {
-      cout << "Right \n";
-      //turn('R');
+      Serial.println("Right");
+      turn('R');
       break;
     }
 
     default:
-      cout << "STOP\n";
+      Serial.println("STOP");
+      turn('X');
       break;
     }
     break;
@@ -342,37 +345,40 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
   case 4: {
     switch (newHeading) {
     case 1: {
-      cout << "Right \n";
-      //turn('R');
+      Serial.println("Right");
+      turn('R');
       break;
     }
 
     case 2: {
-      cout << "Back \n";
-      //turn('B')
+      Serial.println("Back");
+      turn('B');
       break;
     }
 
     case 3: {
-      cout << "Left \n";
-      //turn('L')
+      Serial.println("Left");
+      turn('L');
       break;
     }
 
     case 4: {
-      cout << "Straight \n";
+      Serial.println("Straight");
+      turn('S');
       break;
     }
 
     default:
-      cout << "STOP\n";
+      Serial.println("STOP");
+      turn('X');
       break;
     }
     break;
   }
 
   default: {
-    cout << "STOP\n";
+    Serial.println("STOP");
+    turn('X');
     break;
   }
   }
