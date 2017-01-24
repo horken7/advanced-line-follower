@@ -26,7 +26,6 @@ void followSegment()
   unsigned long millis_start;
   unsigned long millis_curr;
 
-  button.waitForButton();
 
   while(1)
   {
@@ -78,6 +77,7 @@ void followSegment()
     else if(ABOVE_LINE(sensors[0]) || ABOVE_LINE(sensors[5]))
     {
       // Found an intersection.
+      delay(OVERSHOOT(LINE_THICKNESS));
       motors.setSpeeds(0,0);
       return;
     }
@@ -293,8 +293,11 @@ void turn(char dir)
     // Don't do anything!
     motors.setSpeeds(0, 0);
     break;
+
   }
+  //button.waitForButton();
 }
+
 
 
 /*********************************************
