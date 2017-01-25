@@ -22,22 +22,28 @@ void navigator()
 {
   Graph graph;
 
-  graph.appendEdge(100, 2, 1, 2);
-  graph.appendEdge(2, 1, 1, 3);
-
-  graph.appendEdge(3, 2, 3, 4);
-
-  graph.appendEdge(7, 1, 2, 4);
-  graph.appendEdge(5, 3, 2, 5);
-
+  // graph.appendEdge(weight, state, start, goal);
+  graph.appendEdge(1, 2, 1, 2);
+  graph.appendEdge(2, 2, 2, 3);
+  graph.appendEdge(3, 3, 1, 4);
+  graph.appendEdge(4, 3, 2, 5);
+  graph.appendEdge(5, 3, 3, 6);
+  graph.appendEdge(6, 2, 4, 5);
+  graph.appendEdge(7, 2, 5, 6);
+  graph.appendEdge(8, 3, 4, 7);
+  graph.appendEdge(9, 3, 5, 8);
+  graph.appendEdge(10, 3, 6, 9);
+  graph.appendEdge(11, 2, 7, 8);
+  graph.appendEdge(12, 2, 8, 9);
+  
 
   int x = graph.nodeTotal();
 
   int *adjMat = graph.getAdjMat();
 
-  int start = 3;
-  int goal = 1;
-  int initialState = 1;
+  int start = 1;
+  int goal = 9;
+  int initialState = 2;
 
   int *path = calculateShortestPath(adjMat, start, goal, x);
   int nrEdges = path[0];
