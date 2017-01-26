@@ -77,7 +77,10 @@ void followSegment()
     {
       // Found an intersection.
       // Make sure we are over the line
-      delay(OVERSHOOT(LINE_THICKNESS));
+      // delay(OVERSHOOT(LINE_THICKNESS));
+      motors.setSpeeds(SPEED, SPEED);
+      millis_start = millis();
+      while(100 > (millis()-millis_start));
       motors.setSpeeds(0,0);
       return;
     }
@@ -258,7 +261,7 @@ void turn(char dir)
 
       // This while loop monitors line position
       // until the turn is complete.
-      while(count < 2)
+      while(count < 4)
       {
         reflectanceSensors.readLine(sensors);
 
@@ -273,11 +276,6 @@ void turn(char dir)
     break;
 
     case 'R':
-      unsigned long millis_start2;
-      motors.setSpeeds(SPEED, SPEED);
-      millis_start2 = millis();
-      while(100 > (millis()-millis_start2));
-      motors.setSpeeds(0, 0);
       // Turn right.
       motors.setSpeeds(TURN_SPEED, -TURN_SPEED);
 
@@ -297,7 +295,7 @@ void turn(char dir)
       unsigned long millis_start;
       motors.setSpeeds(SPEED, SPEED);
       millis_start = millis();
-      while(100 > (millis()-millis_start));
+      while(75000/SPEED > (millis()-millis_start));
       motors.setSpeeds(0, 0);
     break;
 

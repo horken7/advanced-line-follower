@@ -2,19 +2,20 @@
 #include "graph.h"
 #include "pathPlanning.h"
 
+int incomingStart = 0;
+int incomingGoal = 0;
+int incomingState = 0;
 
 void setup() {
   calibrate_sensors();
   Serial.begin (9600);
-  initialPrint(); // Optional, label columns in potential .csv export
-  
+  //initialPrint(); // Optional, label columns in potential .csv export
+  userInput();
 }
 
 void loop() 
-{
-  //followSegment();
-  //turn('L');
-
+{ 
+  
   navigator();
 }
 
@@ -41,9 +42,9 @@ void navigator()
 
   int *adjMat = graph.getAdjMat();
 
-  int start = 1;
-  int goal = 9;
-  int initialState = 2;
+  int start = incomingStart;
+  int goal = incomingGoal;
+  int initialState = incomingState;
 
   int *path = calculateShortestPath(adjMat, start, goal, x);
   int nrEdges = path[0];
@@ -62,5 +63,29 @@ void navigator()
     }
     followSegment();
   }
+
+  delete[] path;
+  
+}
+void userInput(){
+  Serial.print(Welcome to advanced line follower. Please choose start node: );
+  if (Serial.available() > 0) {
+    incomingStart = Serial.read();
+    Serial.print("\n You chose ");
+    Serial.println(incomingStart);
+    Serial.print("Please choose goal node: ");
+    if (Serial.available() > 0) {
+      incomingGoal = Serial.read();
+      Serial.println("\n You chose " incomingGoal);
+      Serial.print("Please choose initial state: ");
+      if (Serial.available() > 0) {
+        incomingState = Serial.read();
+        Serial.println("\n You chose " incomingState);
+        delay(500);
+        Serial.print("Watch the magic happen...");
+        delay(500);
+      }
+    }
+  }  
 }
 
