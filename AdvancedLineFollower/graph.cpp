@@ -1,6 +1,6 @@
 #include "graph.h"
-#include "AdvancedLineFollowerFunctions.h"
-
+//#include "AdvancedLineFollowerFunctions.h"
+#include <iostream>
 using namespace std;
 // Directions N=1, E=2, S=3, W=4
 
@@ -157,16 +157,16 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
     int completeSearch = 0;
     while (edge->length > 0) {
       if (edge->startNode == curNode && edge->endNode == prevNode) {
-        currentHeading = (edge->direction + 1 % 4) + 1;
+        currentHeading = ((edge->direction + 1) % 4) + 1;
         completeSearch++;
       }
 
-      else if (edge->startNode == nextNode && edge->endNode == curNode) {
-        newHeading = (edge->direction + 1 % 4) + 1;
+      if (edge->startNode == nextNode && edge->endNode == curNode) {
+        newHeading = ((edge->direction + 1) % 4) + 1;
         completeSearch++;
       }
 
-      else if (completeSearch >= 2) {
+      if (completeSearch >= 2) {
         break;
       }
       edge = edge->next;
@@ -179,16 +179,16 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
     int completeSearch = 0;
     while (edge->length > 0) {
       if (edge->startNode == curNode && edge->endNode == prevNode) {
-        currentHeading = (edge->direction + 1 % 4) + 1;
+        currentHeading = ((edge->direction + 1) % 4) + 1;
         completeSearch++;
       }
 
-      else if (edge->startNode == curNode && edge->endNode == nextNode) {
+      if (edge->startNode == curNode && edge->endNode == nextNode) {
         newHeading = edge->direction;
         completeSearch++;
       }
 
-      else if (completeSearch >= 2) {
+      if (completeSearch >= 2) {
         break;
       }
       edge = edge->next;
@@ -205,12 +205,12 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
         completeSearch++;
       }
 
-      else if (edge->startNode == nextNode && edge->endNode == curNode) {
-        newHeading = (edge->direction + 1 % 4) + 1;
+      if (edge->startNode == nextNode && edge->endNode == curNode) {
+        newHeading = ((edge->direction + 1) % 4) + 1;
         completeSearch++;
       }
 
-      else if (completeSearch >= 2) {
+      if (completeSearch >= 2) {
         break;
       }
       edge = edge->next;
@@ -227,12 +227,12 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
         completeSearch++;
       }
 
-      else if (edge->startNode == curNode && edge->endNode == nextNode) {
+      if (edge->startNode == curNode && edge->endNode == nextNode) {
         newHeading = edge->direction;
         completeSearch++;
       }
 
-      else if (completeSearch >= 2) {
+      if (completeSearch >= 2) {
         break;
       }
       edge = edge->next;
@@ -240,6 +240,10 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
   }
 
   /**************************************************/
+  // cout << "negate prev heading: " << negCurrentHeading <<endl;
+  // cout << "negate new heading: " << negNewHeading <<endl;
+  // cout << "current heading: " << currentHeading <<endl;
+  // cout << "new heading: " << newHeading <<endl;
 
   switch (currentHeading) {
   case 1: {
@@ -247,30 +251,35 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
     case 1: {
       Serial.println("Straight");
       turn('S');
+      //cout << "Straight\n";
       break;
     }
 
     case 2: {
       Serial.println("Right");
       turn('R');
+      //cout << "Right\n";
       break;
     }
 
     case 3: {
       Serial.println("Back");
       turn('B');
+      //cout << "Back\n";
       break;
     }
 
     case 4: {
       Serial.println("Left");
       turn('L');
+      //cout << "Left\n";
       break;
     }
 
     default:
       Serial.println("STOP");
       turn('X');
+      //cout << "STOP\n";
       break;
     }
     break;
@@ -281,30 +290,35 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
     case 1: {
       Serial.println("Left");
       turn('L');
+      //cout << "Left\n";
       break;
     }
 
     case 2: {
       Serial.println("Straight");
       turn('S');
+      //cout << "Straight\n";
       break;
     }
 
     case 3: {
       turn('R');
       Serial.println("Right");
+      //cout << "Right\n";
       break;
     }
 
     case 4: {
       Serial.println("Back");
       turn('B');
+      //cout << "Back\n";
       break;
     }
 
     default:
       Serial.println("STOP");
       turn('X');
+      //cout << "STOP\n";
       break;
     }
     break;
@@ -314,30 +328,35 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
     case 1: {
       Serial.println("Back");
       turn('B');
+      //cout << "Back\n";
       break;
     }
 
     case 2: {
       Serial.println("Left");
       turn('L');
+      //cout << "Left\n";
       break;
     }
 
     case 3: {
       Serial.println("Straight");
       turn('S');
+      //cout << "Straight\n";
       break;
     }
 
     case 4: {
       Serial.println("Right");
       turn('R');
+      //cout << "Right\n";
       break;
     }
 
     default:
       Serial.println("STOP");
       turn('X');
+      //cout << "STOP\n";
       break;
     }
     break;
@@ -347,30 +366,35 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
     case 1: {
       Serial.println("Right");
       turn('R');
+      //cout << "Right\n";
       break;
     }
 
     case 2: {
       Serial.println("Back");
       turn('B');
+      //cout << "Back\n";
       break;
     }
 
     case 3: {
       Serial.println("Left");
       turn('L');
+      //cout << "Left\n";
       break;
     }
 
     case 4: {
       Serial.println("Straight");
       turn('S');
+      //cout << "Straight\n";
       break;
     }
 
     default:
       Serial.println("STOP");
       turn('X');
+      //cout << "STOP\n";
       break;
     }
     break;
@@ -379,6 +403,7 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
   default: {
     Serial.println("STOP");
     turn('X');
+    //cout << "STOP\n";
     break;
   }
   }
