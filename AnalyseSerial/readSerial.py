@@ -8,7 +8,7 @@ http://pyserial.readthedocs.io/en/latest/pyserial.html
 '''
 import serial
 
-ser = serial.Serial('/dev/tty.usbmodem1411', 9600, timeout=1)
+ser = serial.Serial('/dev/tty.usbmodem118', 9600, timeout=1)
 # The /dev/tty.xxxxxx is the port for reading Arduino serial and can differ between computers
 
 logfile = open('arduinoReadings.csv', 'a')

@@ -9,7 +9,7 @@
 
 // SENSOR_THRESHOLD is a value to compare reflectance sensor
 // readings to to decide if the sensor is over a black line
-#define SENSOR_THRESHOLD 300
+#define SENSOR_THRESHOLD 700
 
 // NO_LINE_THRESHOLD is a value to compare reflectanse sensor
 // readings to decide if you are NOT over a black line
@@ -22,12 +22,12 @@
 // Motor speed when turning. TURN_SPEED should always
 // have a positive value, otherwise the Zumo will turn
 // in the wrong direction.
-#define TURN_SPEED 150
+#define TURN_SPEED 250
 
 // Motor speed when driving straight. SPEED should always
 // have a positive value, otherwise the Zumo will travel in the
 // wrong direction.
-#define SPEED 150 
+#define SPEED 250 
 
 // Thickness of your line in inches
 #define LINE_THICKNESS .75

@@ -245,31 +245,31 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
   case 1: {
     switch (newHeading) {
     case 1: {
-      Serial.println("Straight");
+      //Serial.println("Straight");
       turn('S');
       break;
     }
 
     case 2: {
-      Serial.println("Right");
+      //Serial.println("Right");
       turn('R');
       break;
     }
 
     case 3: {
-      Serial.println("Back");
+      //Serial.println("Back");
       turn('B');
       break;
     }
 
     case 4: {
-      Serial.println("Left");
+      //Serial.println("Left");
       turn('L');
       break;
     }
 
     default:
-      Serial.println("STOP");
+      //Serial.println("STOP");
       turn('X');
       break;
     }
@@ -279,31 +279,31 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
   case 2: {
     switch (newHeading) {
     case 1: {
-      Serial.println("Left");
+      //Serial.println("Left");
       turn('L');
       break;
     }
 
     case 2: {
-      Serial.println("Straight");
+      //Serial.println("Straight");
       turn('S');
       break;
     }
 
     case 3: {
       turn('R');
-      Serial.println("Right");
+      //Serial.println("Right");
       break;
     }
 
     case 4: {
-      Serial.println("Back");
+      //Serial.println("Back");
       turn('B');
       break;
     }
 
     default:
-      Serial.println("STOP");
+      //Serial.println("STOP");
       turn('X');
       break;
     }
@@ -312,31 +312,31 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
   case 3: {
     switch (newHeading) {
     case 1: {
-      Serial.println("Back");
+      //Serial.println("Back");
       turn('B');
       break;
     }
 
     case 2: {
-      Serial.println("Left");
+      //Serial.println("Left");
       turn('L');
       break;
     }
 
     case 3: {
-      Serial.println("Straight");
+      //Serial.println("Straight");
       turn('S');
       break;
     }
 
     case 4: {
-      Serial.println("Right");
+      //Serial.println("Right");
       turn('R');
       break;
     }
 
     default:
-      Serial.println("STOP");
+      //Serial.println("STOP");
       turn('X');
       break;
     }
@@ -345,31 +345,31 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
   case 4: {
     switch (newHeading) {
     case 1: {
-      Serial.println("Right");
+      //Serial.println("Right");
       turn('R');
       break;
     }
 
     case 2: {
-      Serial.println("Back");
+      //Serial.println("Back");
       turn('B');
       break;
     }
 
     case 3: {
-      Serial.println("Left");
+      //Serial.println("Left");
       turn('L');
       break;
     }
 
     case 4: {
-      Serial.println("Straight");
+      //Serial.println("Straight");
       turn('S');
       break;
     }
 
     default:
-      Serial.println("STOP");
+      //Serial.println("STOP");
       turn('X');
       break;
     }
@@ -377,7 +377,7 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
   }
 
   default: {
-    Serial.println("STOP");
+    //Serial.println("STOP");
     turn('X');
     break;
   }

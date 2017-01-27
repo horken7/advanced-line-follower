@@ -23,6 +23,9 @@ void followSegment()
   unsigned int sensors[6];
   int offset_from_center;
   int power_difference;
+  int lastError = 0;
+  int Ki;
+  int Kp;
   unsigned long millis_start;
   unsigned long millis_curr;
 
@@ -38,15 +41,21 @@ void followSegment()
 
     // The offset_from_center should be 0 when we are on the line.
     offset_from_center = ((int)position) - 2500;
-
-    //printSensorReadingsToSerial(sensors, position, millis_curr);
+    
+    // Prints the sensor readings to serial (calibrated sensors 0-5, weighted average and timestamp)
+    // printSensorReadingsToSerial(sensors, position, millis_curr);
 
     // Compute the difference between the two motor power settings,
     // m1 - m2.  If this is a positive number the robot will turn
     // to the left.  If it is a negative number, the robot will
     // turn to the right, and the magnitude of the number determines
     // the sharpness of the turn.
-    power_difference = offset_from_center / 3;
+    // Kp and Ki below represent the constants in a PI-regulator,
+    // set Ki=0 for P-regulator
+    Kp = 3;
+    Ki = 0;
+    power_difference = offset_from_center / Kp + Ki * (offset_from_center - lastError);
+    lastError = offset_from_center;
 
     // Compute the actual motor settings.  We never set either motor
     // to a negative value.
@@ -64,7 +73,7 @@ void followSegment()
     // determining whether there is a line straight ahead, and the
     // sensors 0 and 5 for detecting lines going to the left and
     // right.
-
+    /*
     if(!ABOVE_LINE(sensors[0]) && !ABOVE_LINE(sensors[1]) && !ABOVE_LINE(sensors[2]) && !ABOVE_LINE(sensors[3]) && !ABOVE_LINE(sensors[4]) && !ABOVE_LINE(sensors[5]))
     {
       // There is no line visible ahead, and we didn't see any
@@ -73,17 +82,16 @@ void followSegment()
       motors.setSpeeds(0,0);
       return;
     }
-    else if(ABOVE_LINE(sensors[0]) || ABOVE_LINE(sensors[5]))
+    */
+    if(ABOVE_LINE(sensors[0]) || ABOVE_LINE(sensors[5]))
     {
       // Found an intersection.
       // Make sure we are over the line
       // delay(OVERSHOOT(LINE_THICKNESS));
-      motors.setSpeeds(SPEED, SPEED);
-      millis_start = millis();
-      while(100 > (millis()-millis_start));
       motors.setSpeeds(0,0);
       return;
     }
+    
 
   }
 }
@@ -226,6 +234,8 @@ void turn(char dir)
   unsigned short count = 0;
   unsigned short last_status = 0;
   unsigned int sensors[6];
+
+  unsigned int millis_start;
   
   // dir tests for which direction to turn
   switch(dir)
@@ -237,6 +247,12 @@ void turn(char dir)
   // line under the sensor. If 'B' is passed to the turn function when there is a
   // left turn available, then the Zumo will turn onto the left segment.
     case 'L':
+      // Delay to make turns work
+      motors.setSpeeds(SPEED, SPEED);
+      millis_start = millis();
+      while(100 > (millis()-millis_start));
+      motors.setSpeeds(0,0);
+      
       // Turn left.
       motors.setSpeeds(-TURN_SPEED, TURN_SPEED);
 
@@ -256,6 +272,12 @@ void turn(char dir)
     motors.setSpeeds(0, 0);
     break;
     case 'B':
+      // Delay to make turns work
+      motors.setSpeeds(SPEED, SPEED);
+      millis_start = millis();
+      while(100 > (millis()-millis_start));
+      motors.setSpeeds(0,0);
+      
       // Turn back.
       motors.setSpeeds(-TURN_SPEED, TURN_SPEED);
 
@@ -276,6 +298,13 @@ void turn(char dir)
     break;
 
     case 'R':
+      // Delay to make turns work
+      motors.setSpeeds(SPEED, SPEED);
+      millis_start = millis();
+      while(100 > (millis()-millis_start));
+      motors.setSpeeds(0,0);
+
+      
       // Turn right.
       motors.setSpeeds(TURN_SPEED, -TURN_SPEED);
 
@@ -305,7 +334,6 @@ void turn(char dir)
     break;
 
   }
-  //button.waitForButton();
 }
 
 
@@ -377,7 +405,21 @@ void calibrate_sensors()
   }
 
   // Turn left.
-  turn('L');
+  motors.setSpeeds(-TURN_SPEED, TURN_SPEED);
+
+  // This while loop monitors line position
+  // until the turn is complete.
+  while(count < 2)
+  {
+    reflectanceSensors.readLine(sensors);
+
+    // Increment count whenever the state of the sensor changes
+    // (white->black and black->white) since the sensor should
+    // pass over 1 line while the robot is turning, the final
+    // count should be 2
+    count += ABOVE_LINE(sensors[1]) ^ last_status;
+    last_status = ABOVE_LINE(sensors[1]);
+  }
 
   motors.setSpeeds(0, 0);
 

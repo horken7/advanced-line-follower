@@ -2,9 +2,9 @@
 #include "graph.h"
 #include "pathPlanning.h"
 
-int incomingStart = 0;
-int incomingGoal = 0;
-int incomingState = 0;
+int incomingStart = 4;
+int incomingGoal = 8;
+int incomingState = 1;
 
 void setup() {
   calibrate_sensors();
@@ -15,8 +15,9 @@ void setup() {
 
 void loop() 
 { 
+  // navigator();
+  // followSegment();
   
-  navigator();
 }
 
 void navigator()
@@ -46,12 +47,15 @@ void navigator()
   int goal = incomingGoal;
   int initialState = incomingState;
 
+  // Returns shortest path from start to goal path[0] contains the number of nodes to traverse from start to goal
   int *path = calculateShortestPath(adjMat, start, goal, x);
   int nrEdges = path[0];
+  /*
+   * This prints the path returned from calculateShortestPath
   for(int i = 0; i<= nrEdges; i++){
     Serial.println(path[i]);
     }
-
+  */
   followSegment();
   
   for (int i = 1; i <= nrEdges; i++) {
@@ -68,7 +72,7 @@ void navigator()
   
 }
 void userInput(){
-  Serial.print(Welcome to advanced line follower. Please choose start node: );
+  Serial.print("Welcome to advanced line follower. Please choose start node: ");
   if (Serial.available() > 0) {
     incomingStart = Serial.read();
     Serial.print("\n You chose ");
@@ -76,11 +80,13 @@ void userInput(){
     Serial.print("Please choose goal node: ");
     if (Serial.available() > 0) {
       incomingGoal = Serial.read();
-      Serial.println("\n You chose " incomingGoal);
+      Serial.print("\n You chose ");
+      Serial.println(incomingGoal);
       Serial.print("Please choose initial state: ");
       if (Serial.available() > 0) {
         incomingState = Serial.read();
-        Serial.println("\n You chose " incomingState);
+        Serial.print("\n You chose ");
+        Serial.println(incomingState);
         delay(500);
         Serial.print("Watch the magic happen...");
         delay(500);
