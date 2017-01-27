@@ -33,7 +33,7 @@ void followSegment()
   {
     // Delay to make actions each timestep
     millis_start = millis();
-    while(100 > (millis()-millis_start));
+    while(50 > (millis()-millis_start));
     millis_curr = millis();
 
     // Get the position of the line.
@@ -43,7 +43,7 @@ void followSegment()
     offset_from_center = ((int)position) - 2500;
     
     // Prints the sensor readings to serial (calibrated sensors 0-5, weighted average and timestamp)
-    // printSensorReadingsToSerial(sensors, position, millis_curr);
+    //printSensorReadingsToSerial(sensors, position, millis_curr);
 
     // Compute the difference between the two motor power settings,
     // m1 - m2.  If this is a positive number the robot will turn
@@ -73,16 +73,15 @@ void followSegment()
     // determining whether there is a line straight ahead, and the
     // sensors 0 and 5 for detecting lines going to the left and
     // right.
-    /*
-    if(!ABOVE_LINE(sensors[0]) && !ABOVE_LINE(sensors[1]) && !ABOVE_LINE(sensors[2]) && !ABOVE_LINE(sensors[3]) && !ABOVE_LINE(sensors[4]) && !ABOVE_LINE(sensors[5]))
+    if(!NOT_ABOVE_LINE(sensors[0]) && !NOT_ABOVE_LINE(sensors[1]) && !NOT_ABOVE_LINE(sensors[2]) && !NOT_ABOVE_LINE(sensors[3]) && !NOT_ABOVE_LINE(sensors[4]) && !NOT_ABOVE_LINE(sensors[5]))
     {
       // There is no line visible ahead, and we didn't see any
       // intersection.  Must be a dead end.
-
       motors.setSpeeds(0,0);
+      Serial.println("Error, you are out of bounds, no line found. Put back on line and press button.");
+      button.waitForButton();
       return;
     }
-    */
     if(ABOVE_LINE(sensors[0]) || ABOVE_LINE(sensors[5]))
     {
       // Found an intersection.
@@ -250,7 +249,7 @@ void turn(char dir)
       // Delay to make turns work
       motors.setSpeeds(SPEED, SPEED);
       millis_start = millis();
-      while(100 > (millis()-millis_start));
+      while(50 > (millis()-millis_start));
       motors.setSpeeds(0,0);
       
       // Turn left.
@@ -259,23 +258,26 @@ void turn(char dir)
       // This while loop monitors line position
       // until the turn is complete.
       while(count < 2)
-      {
+      { 
         reflectanceSensors.readLine(sensors);
 
         // Increment count whenever the state of the sensor changes
         // (white->black and black->white) since the sensor should
         // pass over 1 line while the robot is turning, the final
         // count should be 2
-        count += ABOVE_LINE(sensors[1]) ^ last_status;
-        last_status = ABOVE_LINE(sensors[1]);
+        count += ABOVE_LINE(sensors[0]) ^ last_status;
+        last_status = ABOVE_LINE(sensors[0]);
       }
-    motors.setSpeeds(0, 0);
-    break;
+      motors.setSpeeds(-TURN_SPEED/2, TURN_SPEED);
+      millis_start = millis();
+      while(500 > (millis()-millis_start));
+      motors.setSpeeds(0, 0);
+      break;
     case 'B':
       // Delay to make turns work
       motors.setSpeeds(SPEED, SPEED);
       millis_start = millis();
-      while(100 > (millis()-millis_start));
+      while(50 > (millis()-millis_start));
       motors.setSpeeds(0,0);
       
       // Turn back.
@@ -301,7 +303,7 @@ void turn(char dir)
       // Delay to make turns work
       motors.setSpeeds(SPEED, SPEED);
       millis_start = millis();
-      while(100 > (millis()-millis_start));
+      while(50 > (millis()-millis_start));
       motors.setSpeeds(0,0);
 
       
@@ -313,10 +315,13 @@ void turn(char dir)
       while(count < 2)
       {
         reflectanceSensors.readLine(sensors);
-        count += ABOVE_LINE(sensors[4]) ^ last_status;
-        last_status = ABOVE_LINE(sensors[4]);
+        count += ABOVE_LINE(sensors[5]) ^ last_status;
+        last_status = ABOVE_LINE(sensors[5]);
       }
-    motors.setSpeeds(0, 0);
+      motors.setSpeeds(TURN_SPEED, -TURN_SPEED/2);
+      millis_start = millis();
+      while(500 > (millis()-millis_start));
+      motors.setSpeeds(0, 0);
     break;
 
     case 'S':
@@ -324,7 +329,7 @@ void turn(char dir)
       unsigned long millis_start;
       motors.setSpeeds(SPEED, SPEED);
       millis_start = millis();
-      while(75000/SPEED > (millis()-millis_start));
+      while(45000/SPEED > (millis()-millis_start));
       motors.setSpeeds(0, 0);
     break;
 

@@ -2,21 +2,15 @@
 #include "graph.h"
 #include "pathPlanning.h"
 
-int incomingStart = 4;
-int incomingGoal = 8;
-int incomingState = 1;
-
 void setup() {
   calibrate_sensors();
   Serial.begin (9600);
   //initialPrint(); // Optional, label columns in potential .csv export
-  userInput();
 }
 
 void loop() 
 { 
-  // navigator();
-  // followSegment();
+  navigator();
   
 }
 
@@ -43,19 +37,22 @@ void navigator()
 
   int *adjMat = graph.getAdjMat();
 
-  int start = incomingStart;
-  int goal = incomingGoal;
-  int initialState = incomingState;
+  int start = 1;
+  int goal = 9;
+  int initialState = 2;
 
   // Returns shortest path from start to goal path[0] contains the number of nodes to traverse from start to goal
   int *path = calculateShortestPath(adjMat, start, goal, x);
   int nrEdges = path[0];
-  /*
-   * This prints the path returned from calculateShortestPath
-  for(int i = 0; i<= nrEdges; i++){
+  Serial.print("You are going from "); Serial.print(path[1]); Serial.print(" to "); Serial.print(path[0]); Serial.println(". The shortest path is:");
+
+  // This prints the path returned from calculateShortestPath
+  for(int i = 1; i<= nrEdges; i++){
     Serial.println(path[i]);
     }
-  */
+  Serial.println("It goes like this:");
+  turn('X');
+  
   followSegment();
   
   for (int i = 1; i <= nrEdges; i++) {
@@ -69,29 +66,6 @@ void navigator()
   }
 
   delete[] path;
+  Serial.println("Arrived!");
   
 }
-void userInput(){
-  Serial.print("Welcome to advanced line follower. Please choose start node: ");
-  if (Serial.available() > 0) {
-    incomingStart = Serial.read();
-    Serial.print("\n You chose ");
-    Serial.println(incomingStart);
-    Serial.print("Please choose goal node: ");
-    if (Serial.available() > 0) {
-      incomingGoal = Serial.read();
-      Serial.print("\n You chose ");
-      Serial.println(incomingGoal);
-      Serial.print("Please choose initial state: ");
-      if (Serial.available() > 0) {
-        incomingState = Serial.read();
-        Serial.print("\n You chose ");
-        Serial.println(incomingState);
-        delay(500);
-        Serial.print("Watch the magic happen...");
-        delay(500);
-      }
-    }
-  }  
-}
-
