@@ -1,6 +1,8 @@
 #include "graph.h"
-#include "AdvancedLineFollowerFunctions.h"
-//#include <iostream>
+//#include "AdvancedLineFollowerFunctions.h"
+#include <iostream>
+#include "pathPlanning.h"
+
 using namespace std;
 // Directions N=1, E=2, S=3, W=4
 
@@ -8,6 +10,7 @@ Graph::Graph() {
   numEdges = -1;
   numNodes = -1;
   adjMat = NULL;
+  calcNewMat = true;
 
   edges = new Edge;
   edges->length = -1;
@@ -15,6 +18,19 @@ Graph::Graph() {
   edges->startNode = 0;
   edges->endNode = 0;
   edges->next = NULL;
+
+  tempNodeNum = 0;
+  nodeHanging = new bool[20];
+  nodeType = new int[20];
+
+  unexploredEdges = new int[20];
+  dirUnexploredEdges = new int[4 * 20];
+
+  for (int i = 0; i < 20; i++) {
+    nodeHanging[i] = true;
+    nodeType[i] = 0;
+  }
+
 }
 
 Graph::~Graph() {
@@ -41,6 +57,26 @@ Graph::~Graph() {
   else if (numEdges == 0) {
     delete edges;
     edges = NULL;
+  }
+
+  if (nodeHanging) {
+    delete[] nodeHanging;
+    nodeHanging = NULL;
+  }
+
+  if (nodeType) {
+    delete[] nodeType;
+    nodeType = NULL;
+  }
+
+  if (dirUnexploredEdges) {
+    delete[] dirUnexploredEdges;
+    dirUnexploredEdges = NULL;
+  }
+
+  if (unexploredEdges) {
+    delete[] unexploredEdges;
+    unexploredEdges = NULL;
   }
 }
 
@@ -104,13 +140,19 @@ void Graph::countNodes() {
 }
 
 int *Graph::getAdjMat() {
-  if (adjMat) {
+  if (adjMat && !calcNewMat) {
     return adjMat;
   }
 
   int width = nodeTotal();
   if (width <= 0) {
     return NULL;
+  }
+
+  if (calcNewMat && adjMat) {
+    delete[] adjMat;
+    adjMat = NULL;
+    calcNewMat = false;
   }
 
   adjMat = new int[width * width];
@@ -249,32 +291,37 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
   case 1: {
     switch (newHeading) {
     case 1: {
-      Serial.println("Straight");
+      //Serial.println("Straight");
       turn('S');
+      //cout << "Straight\n";
       break;
     }
 
     case 2: {
-      Serial.println("Right");
+      //Serial.println("Right");
       turn('R');
+      //cout << "Right\n";
       break;
     }
 
     case 3: {
-      Serial.println("Back");
+      //Serial.println("Back");
       turn('B');
+      //cout << "Back\n";
       break;
     }
 
     case 4: {
-      Serial.println("Left");
+      //Serial.println("Left");
       turn('L');
+      //cout << "Left\n";
       break;
     }
 
     default:
-      Serial.println("STOP");
+      //Serial.println("STOP");
       turn('X');
+      //cout << "STOP\n";
       break;
     }
     break;
@@ -283,32 +330,37 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
   case 2: {
     switch (newHeading) {
     case 1: {
-      Serial.println("Left");
+      //Serial.println("Left");
       turn('L');
+      //cout << "Left\n";
       break;
     }
 
     case 2: {
-      Serial.println("Straight");
+      //Serial.println("Straight");
       turn('S');
+      //cout << "Straight\n";
       break;
     }
 
     case 3: {
       turn('R');
-      Serial.println("Right");
+      //cout << "Right\n";
+      // Serial.println("Right");
       break;
     }
 
     case 4: {
-      Serial.println("Back");
+      //Serial.println("Back");
       turn('B');
+      //cout << "Back\n";
       break;
     }
 
     default:
-      Serial.println("STOP");
+      //Serial.println("STOP");
       turn('X');
+      //cout << "STOP\n";
       break;
     }
     break;
@@ -316,32 +368,37 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
   case 3: {
     switch (newHeading) {
     case 1: {
-      Serial.println("Back");
+      //Serial.println("Back");
       turn('B');
+      //cout << "Back\n";
       break;
     }
 
     case 2: {
-      Serial.println("Left");
+      //Serial.println("Left");
       turn('L');
+      //cout << "Left\n";
       break;
     }
 
     case 3: {
-      Serial.println("Straight");
+      //Serial.println("Straight");
       turn('S');
+      //cout << "Straight\n";
       break;
     }
 
     case 4: {
-      Serial.println("Right");
+      //Serial.println("Right");
       turn('R');
+      //cout << "Right\n";
       break;
     }
 
     default:
-      Serial.println("STOP");
+      //Serial.println("STOP");
       turn('X');
+      //cout << "STOP\n";
       break;
     }
     break;
@@ -349,41 +406,465 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
   case 4: {
     switch (newHeading) {
     case 1: {
-      Serial.println("Right");
+      //Serial.println("Right");
       turn('R');
+      //cout << "Right\n";
       break;
     }
 
     case 2: {
-      Serial.println("Back");
+      //Serial.println("Back");
       turn('B');
+      //cout << "Back\n";
       break;
     }
 
     case 3: {
-      Serial.println("Left");
+      //Serial.println("Left");
       turn('L');
+      //cout << "Left\n";
       break;
     }
 
     case 4: {
-      Serial.println("Straight");
+      //Serial.println("Straight");
       turn('S');
+      //cout << "Straight\n";
       break;
     }
 
     default:
-      Serial.println("STOP");
+      //Serial.println("STOP");
       turn('X');
+      //cout << "STOP\n";
       break;
     }
     break;
   }
 
   default: {
-    Serial.println("STOP");
-    turn('X');
+    //Serial.println("STOP");
+    // turn('X');
+    cout << "STOP\n";
     break;
   }
   }
+}
+
+int Graph::getTempNodeNum(){
+  return tempNodeNum;
+}
+
+void Graph::incTempNodeNum() {
+  tempNodeNum++;
+}
+
+void Graph::decTempNodeNum() {
+  tempNodeNum--;
+}
+
+
+int Graph::getNodeType(int nodeID) {
+  // deadend = 1
+  // corner = 2
+  // T = 3
+  // Cross = 4
+  if (nodeID > tempNodeNum) {
+    return -1;
+  }
+  else {
+    return nodeType[nodeID - 1];
+  }
+}
+
+void Graph::setNodeType(int nodeID, int newNodeType) {
+  // deadend = 1
+  // corner = 2
+  // T = 3
+  // Cross = 4
+  if (nodeID <= tempNodeNum) {
+    nodeType[nodeID - 1] = newNodeType;
+  }
+}
+
+bool Graph::getNodeHanging(int nodeID){
+  if (nodeID <= tempNodeNum) {
+    return nodeHanging[nodeID - 1];
+  }
+
+  else {
+    return true;
+  }
+}
+
+void Graph::setNodeHanging(int nodeID, bool val) {
+    if (nodeID <= tempNodeNum) {
+      nodeHanging[nodeID -1] = val;
+    }
+}
+
+
+
+void Graph::mergeNodes() {
+  int nodeA[10] = {0,0,0,0,0,0,0,0,0};
+  int nodeB[10] = {0,0,0,0,0,0,0,0,0};
+  int numPairs = 0;
+
+  for (int i = 0; i < tempNodeNum; i++) {
+    for (int j = i + 1; j < tempNodeNum; j++) {
+      if (nodeHanging[i] && nodeHanging[j] && i < j) {
+        getAdjMat();
+        int *path1 = calculateShortestPath(adjMat, i + 1, j + 1, tempNodeNum);
+        int *path2 = calculateShortestPath(adjMat, j + 1, i + 1, tempNodeNum);
+
+
+        int path1Sum[2] = {0, 0};
+        int path2Sum[2] = {0, 0};
+        for (int k = 1; k < path1[0]; k++) {
+          Edge *searchEdge = edges;
+
+          if (path1[k + 1] < path1[k]) {
+            while(searchEdge->length > 0) {
+              if ((searchEdge->startNode == path1[k + 1]) && (searchEdge->endNode == path1[k])) {
+                // invert direction
+                switch (searchEdge-> direction) {
+                  case 1: {
+                    // travelling downwards
+                    path1Sum[1] -= searchEdge->length;
+                    break;
+                  }
+
+                  case 2: {
+                    // travelling left
+                    path1Sum[0] -= searchEdge->length;
+                    break;
+                  }
+
+                  case 3: {
+                    // travelling upwards
+                    path1Sum[1] += searchEdge->length;
+                    break;
+                  }
+
+                  case 4: {
+                    // travelling right
+                    path1Sum[0] += searchEdge->length;
+                    break;
+                  }
+                }
+                break;
+              }
+              searchEdge = searchEdge->next;
+            }
+          }
+
+          else if (path1[i] < path1[i + 1]) {
+            while(searchEdge->length > 0) {
+              if ((searchEdge->startNode == path1[k]) && (searchEdge->endNode == path1[k + 1])) {
+                // do not inver direction
+                switch (searchEdge-> direction) {
+                case 1: {
+                  // travelling upwards
+                  path1Sum[1] += searchEdge->length;
+                  break;
+                }
+
+                case 2: {
+                  // travelling right
+                  path1Sum[0] += searchEdge->length;
+                  break;
+                }
+
+                case 3: {
+                  // travelling downwards
+                  path1Sum[1] -= searchEdge->length;
+                  break;
+                }
+
+                case 4: {
+                  // travelling left
+                  path1Sum[0] -= searchEdge->length;
+                  break;
+                }
+                }
+                break;
+              }
+              searchEdge = searchEdge->next;
+            }
+          }
+
+        }
+
+        for (int k = 1; k < path2[0]; k++) {
+          Edge *searchEdge = edges;
+          if (path2[k + 1] < path2[k]) {
+            while(searchEdge->length > 0) {
+              if ((searchEdge->startNode == path2[k + 1]) && (searchEdge->endNode == path2[k])) {
+                // invert direction
+
+                switch (searchEdge-> direction) {
+                  case 1: {
+                    // travelling downwards
+                    path2Sum[1] -= searchEdge->length;
+                    break;
+                  }
+
+                  case 2: {
+                    // travelling left
+                    path2Sum[0] -= searchEdge->length;
+                    break;
+                  }
+
+                  case 3: {
+                    // travelling upwards
+                    path2Sum[1] += searchEdge->length;
+                    break;
+                  }
+
+                  case 4: {
+                    // travelling right
+                    path2Sum[0] += searchEdge->length;
+                    break;
+                  }
+                }
+                break;
+              }
+              searchEdge = searchEdge->next;
+            }
+          }
+          else if (path2[k] < path2[k + 1]) {
+            while(searchEdge->length > 0) {
+              if ((searchEdge->startNode == path2[k]) && (searchEdge->endNode == path2[k + 1])) {
+                // do not inver direction
+
+                switch (searchEdge-> direction) {
+                case 1: {
+                  // travelling upwards
+                  path2Sum[1] += searchEdge->length;
+                  break;
+                }
+
+                case 2: {
+                  // travelling right
+                  path2Sum[0] += searchEdge->length;
+                  break;
+                }
+
+                case 3: {
+                  // travelling downwards
+                  path2Sum[1] -= searchEdge->length;
+                  break;
+                }
+
+                case 4: {
+                  // travelling left
+                  path2Sum[0] -= searchEdge->length;
+                  break;
+                }
+                }
+                break;
+              }
+              searchEdge = searchEdge->next;
+            }
+          }
+        }
+
+
+
+        if (path1Sum[0] == 0 && path1Sum[1] == 0 && path2Sum[0] == 0 && path2Sum[1] == 0) {
+          cout << "Merging nodes: " << i + 1 << " and " << j + 1 << endl;
+
+          nodeA[numPairs] = i + 1;
+          nodeB[numPairs] = j + 1;
+          numPairs++;
+        }
+
+      }
+    }
+  }
+
+  for (int i = 0; i < numPairs; i++) {
+
+    if (nodeA[i] < nodeB[i]) {
+      Edge *searchEdge = edges;
+      while (searchEdge->length > 0) {
+        if (searchEdge->endNode == nodeB[i]) {
+          searchEdge->endNode = nodeA[i];
+        }
+        else if (searchEdge->startNode == nodeB[i] ) {
+          searchEdge->startNode = nodeA[i];
+        }
+        searchEdge = searchEdge->next;
+      }
+      // to byte below
+      int unExploredCount = 0;
+      for (int l = 0; l < 4; l++) {
+        int dir1 = dirUnexploredEdges[nodeA[i] * 4 + l];
+        int dir2 = dirUnexploredEdges[nodeB[i] * 4 + l];
+
+        if (dir1 == dir2) {
+          dirUnexploredEdges[nodeA[i] * 4 + l] = 1;
+          unExploredCount++;
+        }
+        else {
+          dirUnexploredEdges[nodeA[i] * 4 + l] = 0;
+        }
+
+        dirUnexploredEdges[nodeB[i] * 4 + l] = 0;
+
+      }
+      tempNodeNum--;
+      unexploredEdges[nodeA[i] - 1] = unExploredCount;
+      unexploredEdges[nodeB[i] - 1] = 0;
+      calcNewMat = true;
+      countNodes();
+    }
+
+    else {
+      Edge *searchEdge = edges;
+      while (searchEdge->length > 0) {
+        if (searchEdge->endNode == nodeA[i] ) {
+          searchEdge->endNode = nodeB[i];
+        }
+        else if (searchEdge->startNode == nodeA[i] ) {
+          searchEdge->startNode = nodeB[i];
+        }
+        searchEdge = searchEdge->next;
+      }
+
+      // to byte below
+      int unExploredCount = 0;
+      for (int l = 0; l < 4; l++) {
+        int dir1 = dirUnexploredEdges[nodeA[i] * 4 + l];
+        int dir2 = dirUnexploredEdges[nodeB[i] * 4 + l];
+
+        if (dir1 == dir2) {
+          dirUnexploredEdges[nodeB[i] * 4 + l] = 1;
+          unExploredCount++;
+        }
+        else {
+          dirUnexploredEdges[nodeB[i] * 4 + l] = 0;
+        }
+
+        dirUnexploredEdges[nodeA[i] * 4 + l] = 0;
+
+      }
+
+      tempNodeNum--;
+      unexploredEdges[nodeB[i] - 1] = unExploredCount;
+      unexploredEdges[nodeA[i] - 1] = 0;
+      calcNewMat = true;
+      countNodes();
+    }
+  }
+  countNodes();
+}
+
+void Graph::addNewNode(int juncType, int currentDir) {
+  tempNodeNum++;
+  setNodeHanging(tempNodeNum - 1, true);
+
+  switch (juncType) {
+
+    case 1: {
+      setNodeType(tempNodeNum, 1);
+      unexploredEdges[tempNodeNum - 1] = 0;
+      break;
+    }
+
+    case 2: {
+      setNodeType(tempNodeNum, 2);
+      unexploredEdges[tempNodeNum - 1] = 1;
+      // to byte below
+      int idx = (tempNodeNum - 1) * 4 + ((currentDir - 2) % 4);
+      dirUnexploredEdges[idx] = 1;
+      break;
+    }
+
+    case 3: {
+      setNodeType(tempNodeNum, 2);
+      unexploredEdges[tempNodeNum - 1] = 1;
+      // to byte below
+      int idx = (tempNodeNum - 1) * 4 + (currentDir % 4);
+      dirUnexploredEdges[idx] = 1;
+      break;
+    }
+
+    case 4: {
+      setNodeType(tempNodeNum, 3);
+      unexploredEdges[tempNodeNum - 1] = 2;
+      // to byte below
+      int idx1 = (tempNodeNum - 1) * 4 + ((currentDir - 2) % 4);
+      int idx2 = (tempNodeNum - 1) * 4 + currentDir - 1;
+      dirUnexploredEdges[idx1] = 1;
+      dirUnexploredEdges[idx2] = 1;
+      break;
+    }
+
+    case 5: {
+      setNodeType(tempNodeNum, 3);
+      unexploredEdges[tempNodeNum - 1] = 2;
+      // to byte below
+      int idx1 = (tempNodeNum - 1) * 4 + (currentDir % 4);
+      int idx2 = (tempNodeNum - 1) * 4 + currentDir - 1;
+      dirUnexploredEdges[idx1] = 1;
+      dirUnexploredEdges[idx2] = 1;
+      break;
+    }
+
+    case 6: {
+      setNodeType(tempNodeNum, 3);
+      unexploredEdges[tempNodeNum - 1] = 2;
+      // to byte below
+      int idx1 = (tempNodeNum - 1) * 4 + ((currentDir - 2) % 4);
+      int idx2 = (tempNodeNum - 1) * 4 + (currentDir % 4);
+      dirUnexploredEdges[idx1] = 1;
+      dirUnexploredEdges[idx2] = 1;
+      break;
+    }
+
+    case 7: {
+      setNodeType(tempNodeNum, 4);
+      unexploredEdges[tempNodeNum - 1] = 3;
+      // to byte below
+      int idx1 = (tempNodeNum - 1) * 4 + ((currentDir - 2) % 4);
+      int idx2 = (tempNodeNum - 1) * 4 + (currentDir % 4);
+      int idx3 = (tempNodeNum - 1) * 4 + currentDir - 1;
+      dirUnexploredEdges[idx1] = 1;
+      dirUnexploredEdges[idx2] = 1;
+      dirUnexploredEdges[idx3] = 1;
+      break;
+    }
+
+    default:
+      break;
+    }
+
+  cout << "========================================\n";
+  cout << "Node Stats:\n";
+  cout << "Node ID: " << tempNodeNum << endl;
+  cout << "Node Type: " << nodeType[tempNodeNum -1] << endl;
+  cout << "Node Hanging: " << nodeHanging[tempNodeNum -1] << endl;
+  cout << "Num unexplored edges: " << unexploredEdges[tempNodeNum -1] << endl;
+  cout << "Directions of unexplored edges: " << endl;
+  for (int i = 0; i < 4; ++i) {
+    cout << "Dir " << i + 1 << "  Val:  ";
+    cout << dirUnexploredEdges[4 * (tempNodeNum - 1) + i] << endl;
+  }
+
+  cout << "leaving addNewNode\n";
+}
+
+int Graph::getLowHangingNode() {
+  int i = 0;
+  while(!nodeHanging[i]) {
+    i++; 
+  }
+
+  return i + 1;
+
+}
+
+void stats() {
+  
 }
