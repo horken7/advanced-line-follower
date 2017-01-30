@@ -5,12 +5,16 @@
 void setup() {
   calibrate_sensors();
   Serial.begin (9600);
-  //initialPrint(); // Optional, label columns in potential .csv export
+  initialPrint(); // Optional, label columns in potential .csv export
 }
 
 void loop() 
 { 
-  navigator();
+  //navigator();
+  followSegment();
+  turn('R');
+  followSegment();
+  turn('X');
   
 }
 

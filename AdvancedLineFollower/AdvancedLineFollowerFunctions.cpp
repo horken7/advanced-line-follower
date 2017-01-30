@@ -43,7 +43,7 @@ void followSegment()
     offset_from_center = ((int)position) - 2500;
     
     // Prints the sensor readings to serial (calibrated sensors 0-5, weighted average and timestamp)
-    //printSensorReadingsToSerial(sensors, position, millis_curr);
+    printSensorReadingsToSerial(sensors, position, millis_curr);
 
     // Compute the difference between the two motor power settings,
     // m1 - m2.  If this is a positive number the robot will turn
@@ -235,6 +235,7 @@ void turn(char dir)
   unsigned int sensors[6];
 
   unsigned int millis_start;
+  unsigned int position;
   
   // dir tests for which direction to turn
   switch(dir)
@@ -314,9 +315,12 @@ void turn(char dir)
       // until the turn is complete.
       while(count < 2)
       {
-        reflectanceSensors.readLine(sensors);
+        position = reflectanceSensors.readLine(sensors);
         count += ABOVE_LINE(sensors[5]) ^ last_status;
         last_status = ABOVE_LINE(sensors[5]);
+
+        millis_start = millis();
+        printSensorReadingsToSerial(sensors, position, millis_start);
       }
       motors.setSpeeds(TURN_SPEED, -TURN_SPEED/2);
       millis_start = millis();
