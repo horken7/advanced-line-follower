@@ -5,16 +5,12 @@
 void setup() {
   calibrate_sensors();
   Serial.begin (9600);
-  initialPrint(); // Optional, label columns in potential .csv export
+  // initialPrint(); // Optional, label columns in potential .csv export
 }
 
 void loop() 
 { 
-  //navigator();
-  followSegment();
-  turn('R');
-  followSegment();
-  turn('X');
+  navigator();
   
 }
 
@@ -22,7 +18,7 @@ void navigator()
 {
   Graph graph;
 
-  // graph.appendEdge(weight, state, start, goal);
+  // Format is: graph.appendEdge(weight, state, start, goal);
   graph.appendEdge(1, 2, 1, 2);
   graph.appendEdge(2, 2, 2, 3);
   graph.appendEdge(3, 3, 1, 4);
@@ -42,8 +38,8 @@ void navigator()
   int *adjMat = graph.getAdjMat();
 
   int start = 1;
-  int goal = 9;
-  int initialState = 2;
+  int goal = 2;
+  int initialState = 4;
 
   // Returns shortest path from start to goal path[0] contains the number of nodes to traverse from start to goal
   int *path = calculateShortestPath(adjMat, start, goal, x);

@@ -1,6 +1,5 @@
 #include "graph.h"
-//#include "AdvancedLineFollowerFunctions.h"
-#include <iostream>
+#include "AdvancedLineFollowerFunctions.h"
 #include "pathPlanning.h"
 
 using namespace std;
@@ -298,28 +297,28 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
     }
 
     case 2: {
-      //Serial.println("Right");
+      Serial.println("Right");
       turn('R');
       //cout << "Right\n";
       break;
     }
 
     case 3: {
-      //Serial.println("Back");
+      Serial.println("Back");
       turn('B');
       //cout << "Back\n";
       break;
     }
 
     case 4: {
-      //Serial.println("Left");
+      Serial.println("Left");
       turn('L');
       //cout << "Left\n";
       break;
     }
 
     default:
-      //Serial.println("STOP");
+      Serial.println("STOP");
       turn('X');
       //cout << "STOP\n";
       break;
@@ -330,14 +329,14 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
   case 2: {
     switch (newHeading) {
     case 1: {
-      //Serial.println("Left");
+      Serial.println("Left");
       turn('L');
       //cout << "Left\n";
       break;
     }
 
     case 2: {
-      //Serial.println("Straight");
+      Serial.println("Straight");
       turn('S');
       //cout << "Straight\n";
       break;
@@ -346,19 +345,19 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
     case 3: {
       turn('R');
       //cout << "Right\n";
-      // Serial.println("Right");
+      Serial.println("Right");
       break;
     }
 
     case 4: {
-      //Serial.println("Back");
+      Serial.println("Back");
       turn('B');
       //cout << "Back\n";
       break;
     }
 
     default:
-      //Serial.println("STOP");
+      Serial.println("STOP");
       turn('X');
       //cout << "STOP\n";
       break;
@@ -368,35 +367,35 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
   case 3: {
     switch (newHeading) {
     case 1: {
-      //Serial.println("Back");
+      Serial.println("Back");
       turn('B');
       //cout << "Back\n";
       break;
     }
 
     case 2: {
-      //Serial.println("Left");
+      Serial.println("Left");
       turn('L');
       //cout << "Left\n";
       break;
     }
 
     case 3: {
-      //Serial.println("Straight");
+      Serial.println("Straight");
       turn('S');
       //cout << "Straight\n";
       break;
     }
 
     case 4: {
-      //Serial.println("Right");
+      Serial.println("Right");
       turn('R');
       //cout << "Right\n";
       break;
     }
 
     default:
-      //Serial.println("STOP");
+      Serial.println("STOP");
       turn('X');
       //cout << "STOP\n";
       break;
@@ -406,35 +405,35 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
   case 4: {
     switch (newHeading) {
     case 1: {
-      //Serial.println("Right");
+      Serial.println("Right");
       turn('R');
       //cout << "Right\n";
       break;
     }
 
     case 2: {
-      //Serial.println("Back");
+      Serial.println("Back");
       turn('B');
       //cout << "Back\n";
       break;
     }
 
     case 3: {
-      //Serial.println("Left");
+      Serial.println("Left");
       turn('L');
       //cout << "Left\n";
       break;
     }
 
     case 4: {
-      //Serial.println("Straight");
+      Serial.println("Straight");
       turn('S');
       //cout << "Straight\n";
       break;
     }
 
     default:
-      //Serial.println("STOP");
+      Serial.println("STOP");
       turn('X');
       //cout << "STOP\n";
       break;
@@ -443,9 +442,9 @@ void Graph::getDirectionCart(int prevNode, int curNode, int nextNode) {
   }
 
   default: {
-    //Serial.println("STOP");
-    // turn('X');
-    cout << "STOP\n";
+    Serial.println("STOP");
+    turn('X');
+    // cout << "STOP\n";
     break;
   }
   }
@@ -672,7 +671,7 @@ void Graph::mergeNodes() {
 
 
         if (path1Sum[0] == 0 && path1Sum[1] == 0 && path2Sum[0] == 0 && path2Sum[1] == 0) {
-          cout << "Merging nodes: " << i + 1 << " and " << j + 1 << endl;
+          // cout << "Merging nodes: " << i + 1 << " and " << j + 1 << endl;
 
           nodeA[numPairs] = i + 1;
           nodeB[numPairs] = j + 1;
@@ -839,7 +838,7 @@ void Graph::addNewNode(int juncType, int currentDir) {
     default:
       break;
     }
-
+/*
   cout << "========================================\n";
   cout << "Node Stats:\n";
   cout << "Node ID: " << tempNodeNum << endl;
@@ -853,6 +852,7 @@ void Graph::addNewNode(int juncType, int currentDir) {
   }
 
   cout << "leaving addNewNode\n";
+  */
 }
 
 int Graph::getLowHangingNode() {
